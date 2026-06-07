@@ -62,6 +62,11 @@ const NAVY = '#1B3A5C';
 const ORANGE = '#E8792B';
 const GREEN = '#16a34a';
 
+// img data-URI renders reliably in html2canvas PDF export (inline SVG does not)
+const GLOBE_ICON_SRC = `data:image/svg+xml,${encodeURIComponent(
+  '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a73e8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>',
+)}`;
+
 const defaultSettings: CompanySettings = {
   name: 'S. M. Trade International',
   tagline: '1st Class Govt. Contractor, Supplier & Importer',
@@ -545,26 +550,17 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
           }}>
             <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'center', position: 'relative' }}>
               <div style={{ textAlign: 'center', lineHeight: '1.6', flex: 1, paddingRight: '100px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '16px', marginBottom: '2px', lineHeight: '14px' }}>
-                  <span style={{ color: '#1a73e8', display: 'inline-block', verticalAlign: 'middle' }}>✉ info@smtradeint.com</span>
-                  <span style={{ color: '#1a73e8', display: 'inline-block', verticalAlign: 'middle', whiteSpace: 'nowrap' }}>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="11"
-                      height="11"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="#1a73e8"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      style={{ display: 'inline-block', verticalAlign: 'middle', marginRight: '3px' }}
-                    >
-                      <circle cx="12" cy="12" r="10" />
-                      <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" />
-                      <path d="M2 12h20" />
-                    </svg>
-                    <span style={{ verticalAlign: 'middle' }}>smtradeint.com</span>
+                <div style={{ marginBottom: '2px', fontSize: '10px', lineHeight: '14px' }}>
+                  <span style={{ color: '#1a73e8', marginRight: '16px' }}>✉ info@smtradeint.com</span>
+                  <span style={{ color: '#1a73e8' }}>
+                    <img
+                      src={GLOBE_ICON_SRC}
+                      alt=""
+                      width={11}
+                      height={11}
+                      style={{ display: 'inline', verticalAlign: '-1px', marginRight: '3px' }}
+                    />
+                    smtradeint.com
                   </span>
                 </div>
                 <div style={{ marginBottom: '2px' }}>
