@@ -62,11 +62,6 @@ const NAVY = '#1B3A5C';
 const ORANGE = '#E8792B';
 const GREEN = '#16a34a';
 
-// img data-URI renders reliably in html2canvas PDF export (inline SVG does not)
-const GLOBE_ICON_SRC = `data:image/svg+xml,${encodeURIComponent(
-  '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a73e8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>',
-)}`;
-
 const defaultSettings: CompanySettings = {
   name: 'S. M. Trade International',
   tagline: '1st Class Govt. Contractor, Supplier & Importer',
@@ -550,20 +545,8 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
           }}>
             <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'center', position: 'relative' }}>
               <div style={{ textAlign: 'center', lineHeight: '1.6', flex: 1, paddingRight: '100px' }}>
-                <div style={{ marginBottom: '2px', fontSize: '10px', lineHeight: '14px', textAlign: 'center' }}>
-                  <span style={{ color: '#1a73e8', marginRight: '16px' }}>✉ info@smtradeint.com</span>
-                  <span
-                    style={{
-                      color: '#1a73e8',
-                      paddingLeft: '13px',
-                      backgroundImage: `url("${GLOBE_ICON_SRC}")`,
-                      backgroundRepeat: 'no-repeat',
-                      backgroundPosition: 'left center',
-                      backgroundSize: '10px 10px',
-                    }}
-                  >
-                    smtradeint.com
-                  </span>
+                <div style={{ marginBottom: '2px', color: '#1a73e8' }}>
+                  ✉ {settings.email}{'\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0'}🌐 {settings.website.replace(/^www\./i, '')}
                 </div>
                 <div style={{ marginBottom: '2px' }}>
                   ◉ Address : House # 7, Road # 19/A, Sector # 4, Uttara, Dhaka-1230
