@@ -550,17 +550,17 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
           }}>
             <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'center', position: 'relative' }}>
               <div style={{ textAlign: 'center', lineHeight: '1.6', flex: 1, paddingRight: '100px' }}>
-                <div style={{ marginBottom: '2px', fontSize: '10px', lineHeight: '14px' }}>
-                  <span style={{ color: '#1a73e8', marginRight: '16px' }}>✉ info@smtradeint.com</span>
-                  <span style={{ color: '#1a73e8' }}>
+                <div style={{ marginBottom: '2px', fontSize: '10px', lineHeight: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <span style={{ color: '#1a73e8', marginRight: '16px', lineHeight: '14px' }}>✉ info@smtradeint.com</span>
+                  <span style={{ color: '#1a73e8', display: 'inline-flex', alignItems: 'center', gap: '3px', lineHeight: '14px' }}>
                     <img
                       src={GLOBE_ICON_SRC}
                       alt=""
-                      width={11}
-                      height={11}
-                      style={{ display: 'inline', verticalAlign: '-1px', marginRight: '3px' }}
+                      width={10}
+                      height={10}
+                      style={{ display: 'block', flexShrink: 0, marginTop: '2px' }}
                     />
-                    smtradeint.com
+                    <span>smtradeint.com</span>
                   </span>
                 </div>
                 <div style={{ marginBottom: '2px' }}>
