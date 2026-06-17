@@ -1,0 +1,448 @@
+/* SM Trade International — A4 invoice PDF (print-first) */
+
+@page {
+  size: A4;
+  margin: 0;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: #fff;
+  font-family: Arial, Helvetica, 'Segoe UI', sans-serif;
+  font-size: 12px;
+  color: #333;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+.page {
+  position: relative;
+  width: 210mm;
+  height: 297mm;
+  overflow: hidden;
+  page-break-after: always;
+  background: #fff;
+  border: 2px solid #d0d0d0;
+}
+
+.page:last-child {
+  page-break-after: auto;
+}
+
+/* ----- Watermark ----- */
+.watermark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0.06;
+  z-index: 0;
+  pointer-events: none;
+  text-align: center;
+}
+
+.watermark img {
+  width: 320px;
+  height: 320px;
+  object-fit: contain;
+}
+
+/* ----- Header ----- */
+.doc-header {
+  position: relative;
+  z-index: 1;
+  padding: 16px 32px 10px;
+}
+
+.header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.brand-block {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.logo-circle {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  border: 2.5px solid #2b5797;
+  overflow: hidden;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+}
+
+.logo-circle img {
+  width: 95px;
+  height: 95px;
+  object-fit: cover;
+}
+
+.company-name {
+  font-size: 22px;
+  font-weight: 900;
+  color: #1f3b8a;
+  text-transform: uppercase;
+  letter-spacing: 0;
+  line-height: 1.15;
+}
+
+.company-subtitle {
+  font-size: 12px;
+  color: #000;
+  margin-top: 2px;
+  font-style: normal;
+}
+
+.title-block {
+  text-align: center;
+}
+
+.doc-title {
+  font-size: 32px;
+  font-weight: 900;
+  color: #1b3a5c;
+  letter-spacing: 4px;
+  line-height: 1.05;
+  white-space: nowrap;
+}
+
+.doc-number {
+  color: #e8792b;
+  font-size: 13px;
+  font-weight: 700;
+  margin-top: 2px;
+  line-height: 1.1;
+}
+
+.header-divider {
+  height: 2px;
+  background: #999;
+  margin: 8px 32px 0;
+}
+
+/* ----- Body ----- */
+.doc-body {
+  position: relative;
+  z-index: 1;
+  padding: 0 32px;
+}
+
+.meta-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 12px 0 8px;
+}
+
+.bill-to-block {
+  display: flex;
+  align-items: stretch;
+  max-width: 68%;
+}
+
+.bill-accent {
+  width: 6px;
+  background: #1f3b8a;
+  margin-right: 12px;
+  flex-shrink: 0;
+}
+
+.bill-label {
+  font-size: 10px;
+  color: #888;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+
+.bill-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: #111;
+  line-height: 1.35;
+  margin-bottom: 2px;
+}
+
+.bill-org {
+  font-size: 11px;
+  color: #555;
+  line-height: 1.4;
+}
+
+.date-block {
+  text-align: right;
+  font-size: 12px;
+  white-space: nowrap;
+  padding-top: 2px;
+}
+
+.date-label {
+  color: #888;
+  font-size: 11px;
+}
+
+.date-value {
+  color: #222;
+  font-weight: 700;
+}
+
+/* ----- Table ----- */
+.items-table-wrap {
+  position: relative;
+  z-index: 1;
+}
+
+.items-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.items-table thead tr {
+  border-bottom: 2px solid #999;
+}
+
+.items-table th {
+  padding: 7px 8px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #888;
+  text-transform: uppercase;
+}
+
+.items-table th.col-desc {
+  text-align: left;
+  width: 40%;
+}
+
+.items-table th.col-qty,
+.items-table th.col-unit {
+  text-align: center;
+  width: 18%;
+}
+
+.items-table th.col-total {
+  text-align: right;
+  width: 20%;
+}
+
+.items-table tbody tr {
+  border-bottom: 1px solid #e8e8e8;
+}
+
+.items-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.items-table td {
+  padding: 6px 8px;
+  font-size: 12px;
+  vertical-align: top;
+}
+
+.items-table td.col-desc {
+  text-align: left;
+}
+
+.items-table td.col-qty,
+.items-table td.col-unit {
+  text-align: center;
+}
+
+.items-table td.col-total {
+  text-align: right;
+  font-weight: 700;
+}
+
+/* ----- Totals (final page) ----- */
+.totals-block {
+  margin-top: 10px;
+  position: relative;
+  z-index: 1;
+}
+
+.total-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #1b3a5c;
+  border-radius: 4px;
+  padding: 10px 16px;
+  color: #fff;
+}
+
+.total-bar-label {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.total-bar-value {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.amount-words {
+  text-align: right;
+  font-size: 11px;
+  color: #1b3a5c;
+  margin-top: 4px;
+}
+
+/* ----- Signatures (final page) ----- */
+.signatures {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding: 14px 32px 6px;
+  position: relative;
+  z-index: 1;
+}
+
+.signature-col {
+  width: 160px;
+  text-align: center;
+}
+
+.signature-box {
+  height: 50px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 4px;
+}
+
+.signature-box img {
+  max-width: 140px;
+  max-height: 45px;
+  object-fit: contain;
+}
+
+.signature-name {
+  font-size: 11px;
+  font-weight: 700;
+  color: #111;
+  line-height: 1.2;
+}
+
+.signature-meta {
+  font-size: 10px;
+  color: #555;
+  line-height: 1.25;
+}
+
+.signature-line {
+  border-top: 1.5px solid #333;
+  padding-top: 4px;
+  font-size: 11px;
+  color: #555;
+}
+
+/* ----- Footer ----- */
+.doc-footer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  border-top: 2px solid #aaa;
+  padding: 8px 24px 28px;
+  font-size: 10px;
+  color: #555;
+  background: #fff;
+}
+
+.footer-inner {
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
+.footer-contact {
+  text-align: center;
+  line-height: 1.55;
+  flex: 1;
+  padding-right: 96px;
+}
+
+.footer-line {
+  margin-bottom: 2px;
+}
+
+.footer-line.contact-primary {
+  color: #1a73e8;
+}
+
+.footer-phones {
+  margin-top: 1px;
+}
+
+.footer-phones span + span {
+  margin-left: 16px;
+}
+
+.footer-qr {
+  position: absolute;
+  right: 0;
+  top: -6px;
+  text-align: center;
+}
+
+.footer-qr img {
+  width: 80px;
+  height: 80px;
+  display: block;
+}
+
+.footer-qr-caption {
+  font-size: 9px;
+  color: #1b3a5c;
+  font-weight: 700;
+  margin-top: 3px;
+  white-space: nowrap;
+}
+
+.footer-qr-sub {
+  font-size: 8px;
+  color: #555;
+  margin-top: 2px;
+}
+
+.page-number {
+  position: absolute;
+  left: 32px;
+  bottom: 10px;
+  font-size: 10px;
+  color: #555;
+  z-index: 3;
+}
+
+.page-content {
+  position: relative;
+  z-index: 1;
+  min-height: 0;
+}
+
+.page--continued .meta-row {
+  display: none;
+}
+
+.page--continued .items-table thead {
+  display: table-header-group;
+}

@@ -1,0 +1,69 @@
+{
+  "company": {
+    "logo": "../../src/assets/logo.png",
+    "name": "S. M. TRADE INTERNATIONAL",
+    "subtitle": "1st Class Govt. Contractor, Supplier & Importer",
+    "email": "info@smtradeint.com",
+    "website": "www.smtradeint.com",
+    "addresses": [
+      "House # 7, Road # 19/A, Sector # 4, Uttara, Dhaka-1230",
+      "B-25/4, Al-Baraka Super Market, Office # 9-10, Mojidpur Road, Savar, Dhaka-1340"
+    ],
+    "phones": [
+      "+8801876666888",
+      "+8802244466664"
+    ],
+    "qrCode": ""
+  },
+  "invoice": {
+    "invoiceNo": "INV-2026-012",
+    "invoiceDate": "2026-01-21",
+    "billToName": "Course Director, 79th Foundation Training Course",
+    "billToOrganization": "Bangladesh Public Administration Training Centre",
+    "billToAddress": ""
+  },
+  "items": [
+    { "description": "79th FTC Ribbon 2 CM", "qty": "430", "unitPrice": 150, "total": 64500 },
+    { "description": "Transparent VIP ID Card Holder", "qty": "430", "unitPrice": 130, "total": 55900 },
+    { "description": "79th FTC Ribbon 2 CM", "qty": "430", "unitPrice": 150, "total": 64500 },
+    { "description": "Transparent VIP ID Card Holder", "qty": "430", "unitPrice": 130, "total": 55900 },
+    { "description": "79th FTC Ribbon 2 CM", "qty": "430", "unitPrice": 150, "total": 64500 },
+    { "description": "Transparent VIP ID Card Holder", "qty": "430", "unitPrice": 130, "total": 55900 },
+    { "description": "79th FTC Ribbon 2 CM", "qty": "430", "unitPrice": 150, "total": 64500 },
+    { "description": "Transparent VIP ID Card Holder", "qty": "430", "unitPrice": 130, "total": 55900 },
+    { "description": "79th FTC Ribbon 2 CM", "qty": "430", "unitPrice": 150, "total": 64500 },
+    { "description": "Transparent VIP ID Card Holder", "qty": "430", "unitPrice": 130, "total": 55900 },
+    { "description": "79th FTC Ribbon 2 CM", "qty": "430", "unitPrice": 150, "total": 64500 },
+    { "description": "Transparent VIP ID Card Holder", "qty": "430", "unitPrice": 130, "total": 55900 },
+    { "description": "79th FTC Ribbon 2 CM", "qty": "430", "unitPrice": 150, "total": 64500 },
+    { "description": "Transparent VIP ID Card Holder", "qty": "430", "unitPrice": 130, "total": 55900 },
+    { "description": "79th FTC Ribbon 2 CM", "qty": "430", "unitPrice": 150, "total": 64500 },
+    { "description": "Transparent VIP ID Card Holder", "qty": "430", "unitPrice": 130, "total": 55900 },
+    { "description": "79th FTC Ribbon 2 CM", "qty": "430", "unitPrice": 150, "total": 64500 },
+    { "description": "Transparent VIP ID Card Holder", "qty": "430", "unitPrice": 130, "total": 55900 },
+    { "description": "79th FTC Ribbon 2 CM", "qty": "430", "unitPrice": 150, "total": 64500 },
+    { "description": "Transparent VIP ID Card Holder", "qty": "430", "unitPrice": 130, "total": 55900 },
+    { "description": "79th FTC Ribbon 2 CM", "qty": "430", "unitPrice": 150, "total": 64500 },
+    { "description": "Transparent VIP ID Card Holder", "qty": "430", "unitPrice": 130, "total": 55900 },
+    { "description": "79th FTC Ribbon 2 CM", "qty": "430", "unitPrice": 150, "total": 64500 },
+    { "description": "Transparent VIP ID Card Holder", "qty": "430", "unitPrice": 130, "total": 55900 },
+    { "description": "79th FTC Ribbon 2 CM", "qty": "430", "unitPrice": 150, "total": 64500 },
+    { "description": "Transparent VIP ID Card Holder", "qty": "430", "unitPrice": 130, "total": 55900 },
+    { "description": "79th FTC Ribbon 2 CM", "qty": "430", "unitPrice": 150, "total": 64500 },
+    { "description": "Transparent VIP ID Card Holder", "qty": "430", "unitPrice": 130, "total": 55900 },
+    { "description": "79th FTC Ribbon 2 CM", "qty": "430", "unitPrice": 150, "total": 64500 },
+    { "description": "Transparent VIP ID Card Holder", "qty": "430", "unitPrice": 130, "total": 55900 }
+  ],
+  "totals": {
+    "grandTotal": 12345678,
+    "amountInWords": "One Crore Twenty Three Lakh Forty Five Thousand Six Hundred Seventy Eight"
+  },
+  "signatures": {
+    "receivedBy": "",
+    "preparedBy": "SHIHAB",
+    "preparedDate": "18.11.22",
+    "authorizedBy": "A. S. M. AL-AMIN",
+    "designation": "Proprietor M/S. S. M. Trade International",
+    "signatureImage": ""
+  }
+}
