@@ -1,6 +1,56 @@
 const fs = require('fs');
 const path = require('path');
+
+// Persistent Chrome cache inside the server app (survives npm install / VPS deploy)
+const PUPPETEER_CACHE_DIR = process.env.PUPPETEER_CACHE_DIR
+  || path.join(__dirname, '..', '.puppeteer-cache');
+process.env.PUPPETEER_CACHE_DIR = PUPPETEER_CACHE_DIR;
+
 const puppeteer = require('puppeteer');
+
+function getBrowserLaunchOptions() {
+  const args = [
+    '--no-sandbox',
+    '--disable-setuid-sandbox',
+    '--disable-dev-shm-usage',
+    '--font-render-hinting=none',
+  ];
+
+  if (process.env.PUPPETEER_EXECUTABLE_PATH && fs.existsSync(process.env.PUPPETEER_EXECUTABLE_PATH)) {
+    return {
+      headless: true,
+      executablePath: process.env.PUPPETEER_EXECUTABLE_PATH,
+      args,
+    };
+  }
+
+  const systemChrome = [
+    '/usr/bin/google-chrome-stable',
+    '/usr/bin/google-chrome',
+    '/usr/bin/chromium-browser',
+    '/usr/bin/chromium',
+    '/snap/bin/chromium',
+  ].find((p) => fs.existsSync(p));
+
+  if (systemChrome) {
+    return { headless: true, executablePath: systemChrome, args };
+  }
+
+  return { headless: true, args };
+}
+
+async function launchBrowser() {
+  try {
+    return await puppeteer.launch(getBrowserLaunchOptions());
+  } catch (err) {
+    const hint = [
+      'Chrome is not installed for Puppeteer.',
+      'Run: cd /var/www/smtradeapp-soft/server && npm run setup:chrome',
+      'Or set PUPPETEER_EXECUTABLE_PATH to a system Chrome/Chromium binary.',
+    ].join(' ');
+    throw new Error(`${err.message}\n${hint}`);
+  }
+}
 
 const DIR = __dirname;
 const TEMPLATE_PATH = path.join(DIR, 'invoice-template.html');
@@ -307,10 +357,7 @@ async function generateInvoicePdf(data, options = {}) {
 
   let browser;
   try {
-    browser = await puppeteer.launch({
-      headless: 'new',
-      args: ['--no-sandbox', '--disable-setuid-sandbox', '--font-render-hinting=none'],
-    });
+    browser = await launchBrowser();
 
     const page = await browser.newPage();
     await page.goto(toFileUrl(tmpHtml), { waitUntil: 'networkidle0' });
