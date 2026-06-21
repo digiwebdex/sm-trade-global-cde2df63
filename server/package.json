@@ -5,6 +5,8 @@
   "scripts": {
     "start": "node index.js",
     "dev": "node index.js",
+    "setup:chrome": "PUPPETEER_CACHE_DIR=.puppeteer-cache npx puppeteer browsers install chrome",
+    "postinstall": "PUPPETEER_CACHE_DIR=.puppeteer-cache npx puppeteer browsers install chrome || true",
     "invoice-pdf": "node invoice-pdf/generateInvoicePdf.js"
   },
   "dependencies": {

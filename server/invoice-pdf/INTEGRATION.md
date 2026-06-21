@@ -13,7 +13,16 @@
 
 ```bash
 cd /var/www/smtradeapp-soft/server
-npm install puppeteer --omit=dev
+npm install --omit=dev
+npm run setup:chrome
+```
+
+`setup:chrome` downloads Puppeteer’s Chrome into `server/.puppeteer-cache/` (persistent on VPS).
+
+If Chrome is already installed system-wide, you can instead set:
+
+```bash
+export PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
 ```
 
 ## Generate from CLI
