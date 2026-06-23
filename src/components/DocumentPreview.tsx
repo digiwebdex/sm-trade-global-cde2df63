@@ -325,11 +325,11 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
               }}>
                 <img src={logoImg} alt="Logo" style={{ width: '95px', height: '95px', objectFit: 'cover' }} />
               </div>
-              <div>
-                <h1 style={{ fontSize: '23px', fontWeight: '900', color: '#1f3b8a', margin: 0, letterSpacing: '0px', fontFamily: "'MoolBoran', Arial, Helvetica, sans-serif", textTransform: 'uppercase' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', textAlign: 'left' }}>
+                <h1 style={{ fontSize: '28px', fontWeight: '900', color: '#1a3673', margin: 0, padding: 0, letterSpacing: '0', lineHeight: 1.08, fontFamily: 'Arial, Helvetica, sans-serif', textTransform: 'uppercase' }}>
                   S. M. TRADE INTERNATIONAL
                 </h1>
-                <p style={{ fontSize: '13px', color: '#000000', margin: '0', fontWeight: 'normal', fontStyle: 'normal', fontFamily: "Arial, Helvetica, sans-serif", letterSpacing: '0.2px' }}>
+                <p style={{ fontSize: '13px', color: '#000000', margin: '2px 0 0', padding: 0, fontWeight: 'normal', fontStyle: 'normal', fontFamily: 'Arial, Helvetica, sans-serif', letterSpacing: '0.2px', lineHeight: 1.25 }}>
                   1st Class Govt. Contractor, Supplier &amp; Importer
                 </p>
               </div>

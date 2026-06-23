@@ -177,8 +177,10 @@ function renderHeader(data, logoSrc) {
             <img src="${logoSrc}" alt="Logo" />
           </div>
           <div>
-            <div class="company-name">${escapeHtml(company.name)}</div>
-            <div class="company-subtitle">${escapeHtml(company.subtitle)}</div>
+            <div class="company-text">
+              <div class="company-name">${escapeHtml(company.name)}</div>
+              <div class="company-subtitle">${escapeHtml(company.subtitle)}</div>
+            </div>
           </div>
         </div>
         <div class="title-block">
