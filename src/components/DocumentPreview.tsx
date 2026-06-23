@@ -316,23 +316,15 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
         <div className="doc-header-section">
         <div style={{ padding: '18px 35px 12px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '18px' }}>
-              <div style={{ 
-                width: '72px', height: '72px', borderRadius: '50%', 
-                border: '2.5px solid #2B5797', 
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                flexShrink: 0, overflow: 'hidden', backgroundColor: '#fff'
-              }}>
-                <img src={logoImg} alt="Logo" style={{ width: '95px', height: '95px', objectFit: 'cover' }} />
-              </div>
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', textAlign: 'left' }}>
-                <h1 style={{ fontSize: '28px', fontWeight: '900', color: '#1a3673', margin: 0, padding: 0, letterSpacing: '0', lineHeight: 1.08, fontFamily: 'Arial, Helvetica, sans-serif', textTransform: 'uppercase' }}>
-                  S. M. TRADE INTERNATIONAL
-                </h1>
-                <p style={{ fontSize: '13px', color: '#000000', margin: '2px 0 0', padding: 0, fontWeight: 'normal', fontStyle: 'normal', fontFamily: 'Arial, Helvetica, sans-serif', letterSpacing: '0.2px', lineHeight: 1.25 }}>
-                  1st Class Govt. Contractor, Supplier &amp; Importer
-                </p>
-              </div>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '4px', maxWidth: '280px' }}>
+              <img
+                src={logoImg}
+                alt="S. M. Trade International"
+                style={{ height: '72px', width: 'auto', maxWidth: '240px', objectFit: 'contain', display: 'block' }}
+              />
+              <p style={{ fontSize: '13px', color: '#000000', margin: 0, padding: 0, fontWeight: 'normal', fontFamily: 'Arial, Helvetica, sans-serif', letterSpacing: '0.2px', lineHeight: 1.25 }}>
+                1st Class Govt. Contractor, Supplier &amp; Importer
+              </p>
             </div>
             <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
