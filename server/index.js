@@ -234,18 +234,33 @@ app.delete('/api/products/:id', async (req, res) => {
 // ============ INVOICES ============
 app.get('/api/invoices', async (req, res) => {
   try {
-    const [invoices] = await pool.query(`SELECT id, invoice_number as invoiceNumber, date, customer_id as customerId, 
-      customer_name as customerName, customer_address as customerAddress, customer_phone as customerPhone, 
+    const [invoices] = await pool.query(`SELECT id, invoice_number as invoiceNumber, date, customer_id as customerId,
+      customer_name as customerName, customer_address as customerAddress, customer_phone as customerPhone,
       customer_email as customerEmail, total_amount as totalAmount, tax, total_paid as totalPaid,
       status, amount_in_words as amountInWords, signature_received as signatureReceived,
       signature_prepared as signaturePrepared, signature_authorize as signatureAuthorize,
       notes, created_at as createdAt FROM invoices ORDER BY created_at DESC`);
-    
-    for (let inv of invoices) {
-      const [items] = await pool.query('SELECT id, description, quantity, unit_price as unitPrice, total FROM invoice_items WHERE invoice_id=?', [inv.id]);
-      const [payments] = await pool.query('SELECT id, date, method, description, amount FROM invoice_payments WHERE invoice_id=?', [inv.id]);
-      inv.items = items;
-      inv.payments = payments;
+
+    if (invoices.length > 0) {
+      const ids = invoices.map((inv) => inv.id);
+      const [items] = await pool.query('SELECT id, invoice_id as invoiceId, description, quantity, unit_price as unitPrice, total FROM invoice_items WHERE invoice_id IN (?)', [ids]);
+      const [payments] = await pool.query('SELECT id, invoice_id as invoiceId, date, method, description, amount FROM invoice_payments WHERE invoice_id IN (?)', [ids]);
+
+      const itemsByInvoice = new Map();
+      for (const { invoiceId, ...item } of items) {
+        if (!itemsByInvoice.has(invoiceId)) itemsByInvoice.set(invoiceId, []);
+        itemsByInvoice.get(invoiceId).push(item);
+      }
+      const paymentsByInvoice = new Map();
+      for (const { invoiceId, ...p } of payments) {
+        if (!paymentsByInvoice.has(invoiceId)) paymentsByInvoice.set(invoiceId, []);
+        paymentsByInvoice.get(invoiceId).push(p);
+      }
+
+      for (const inv of invoices) {
+        inv.items = itemsByInvoice.get(inv.id) || [];
+        inv.payments = paymentsByInvoice.get(inv.id) || [];
+      }
     }
     res.json(invoices);
   } catch (err) { res.status(500).json({ error: err.message }); }
@@ -341,9 +356,15 @@ app.get('/api/quotations', async (req, res) => {
       total_amount as totalAmount, status, amount_in_words as amountInWords, valid_until as validUntil,
       signature_received as signatureReceived, signature_prepared as signaturePrepared,
       signature_authorize as signatureAuthorize, notes, created_at as createdAt FROM quotations ORDER BY created_at DESC`);
-    for (let q of rows) {
-      const [items] = await pool.query('SELECT id, description, quantity, unit_price as unitPrice, total FROM quotation_items WHERE quotation_id=?', [q.id]);
-      q.items = items;
+    if (rows.length > 0) {
+      const ids = rows.map((q) => q.id);
+      const [items] = await pool.query('SELECT id, quotation_id as quotationId, description, quantity, unit_price as unitPrice, total FROM quotation_items WHERE quotation_id IN (?)', [ids]);
+      const itemsByQuotation = new Map();
+      for (const { quotationId, ...item } of items) {
+        if (!itemsByQuotation.has(quotationId)) itemsByQuotation.set(quotationId, []);
+        itemsByQuotation.get(quotationId).push(item);
+      }
+      for (const q of rows) q.items = itemsByQuotation.get(q.id) || [];
     }
     res.json(rows);
   } catch (err) { res.status(500).json({ error: err.message }); }
@@ -420,10 +441,16 @@ app.get('/api/challans', async (req, res) => {
       customer_phone as customerPhone, total_quantity as totalQuantity, status,
       signature_received as signatureReceived, signature_prepared as signaturePrepared,
       signature_authorize as signatureAuthorize, notes, created_at as createdAt FROM challans ORDER BY created_at DESC`);
-    for (let c of rows) {
-      const [items] = await pool.query(`SELECT id, item_name as itemName, details, size, delivery_qty as deliveryQty,
-        balance_qty as balanceQty, unit FROM challan_items WHERE challan_id=?`, [c.id]);
-      c.items = items;
+    if (rows.length > 0) {
+      const ids = rows.map((c) => c.id);
+      const [items] = await pool.query(`SELECT id, challan_id as challanId, item_name as itemName, details, size, delivery_qty as deliveryQty,
+        balance_qty as balanceQty, unit FROM challan_items WHERE challan_id IN (?)`, [ids]);
+      const itemsByChallan = new Map();
+      for (const { challanId, ...item } of items) {
+        if (!itemsByChallan.has(challanId)) itemsByChallan.set(challanId, []);
+        itemsByChallan.get(challanId).push(item);
+      }
+      for (const c of rows) c.items = itemsByChallan.get(c.id) || [];
     }
     res.json(rows);
   } catch (err) { res.status(500).json({ error: err.message }); }
@@ -502,9 +529,15 @@ app.get('/api/purchase-orders', async (req, res) => {
       supplier_address as supplierAddress, supplier_phone as supplierPhone, supplier_email as supplierEmail,
       total_amount as totalAmount, status, amount_in_words as amountInWords, notes,
       created_at as createdAt FROM purchase_orders ORDER BY created_at DESC`);
-    for (let po of rows) {
-      const [items] = await pool.query('SELECT id, description, quantity, unit_price as unitPrice, total FROM purchase_order_items WHERE po_id=?', [po.id]);
-      po.items = items;
+    if (rows.length > 0) {
+      const ids = rows.map((po) => po.id);
+      const [items] = await pool.query('SELECT id, po_id as poId, description, quantity, unit_price as unitPrice, total FROM purchase_order_items WHERE po_id IN (?)', [ids]);
+      const itemsByPo = new Map();
+      for (const { poId, ...item } of items) {
+        if (!itemsByPo.has(poId)) itemsByPo.set(poId, []);
+        itemsByPo.get(poId).push(item);
+      }
+      for (const po of rows) po.items = itemsByPo.get(po.id) || [];
     }
     res.json(rows);
   } catch (err) { res.status(500).json({ error: err.message }); }

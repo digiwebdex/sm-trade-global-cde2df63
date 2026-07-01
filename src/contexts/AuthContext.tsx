@@ -4,6 +4,7 @@ import { api } from '@/utils/api';
 
 interface AuthContextType {
   user: User | null;
+  initializing: boolean;
   login: (email: string, password: string) => Promise<boolean>;
   logout: () => void;
   isAdmin: boolean;
@@ -13,6 +14,10 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
+  // True until we've read the persisted session from localStorage. Prevents
+  // deep links / page refreshes from bouncing to /login (and then /dashboard)
+  // before the saved user has been restored.
+  const [initializing, setInitializing] = useState(true);
 
   useEffect(() => {
     const saved = localStorage.getItem('sm_current_user');
@@ -20,6 +25,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (saved && token) {
       try { setUser(JSON.parse(saved)); } catch { /* ignore */ }
     }
+    setInitializing(false);
   }, []);
 
   const login = async (email: string, password: string): Promise<boolean> => {
@@ -45,7 +51,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, isAdmin: user?.role === 'admin' }}>
+    <AuthContext.Provider value={{ user, initializing, login, logout, isAdmin: user?.role === 'admin' }}>
       {children}
     </AuthContext.Provider>
   );
