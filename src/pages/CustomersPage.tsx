@@ -68,25 +68,26 @@ export default function CustomersPage() {
   const openNew = () => { setEditing(null); setForm(emptyCustomer); setDialogOpen(true); };
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
+    <div className="page-shell">
+      <div className="page-header">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">Customers</h1>
-          <p className="text-muted-foreground">Manage your customer database</p>
+          <h1 className="page-title">Customers</h1>
+          <p className="page-subtitle">Manage your customer database</p>
         </div>
-        <Button onClick={openNew} className="bg-secondary hover:bg-secondary/90">
+        <Button onClick={openNew} className="bg-secondary hover:bg-secondary/90 w-full sm:w-auto">
           <Plus className="h-4 w-4 mr-2" /> Add Customer
         </Button>
       </div>
 
       <Card>
         <CardHeader>
-          <div className="relative max-w-sm">
+          <div className="relative w-full max-w-sm">
             <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
             <Input placeholder="Search customers..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-10" />
           </div>
         </CardHeader>
         <CardContent>
+          <div className="table-responsive">
           <Table>
             <TableHeader>
               <TableRow>
@@ -118,11 +119,12 @@ export default function CustomersPage() {
               ))}
             </TableBody>
           </Table>
+          </div>
         </CardContent>
       </Card>
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent>
+        <DialogContent className="max-w-[calc(100vw-2rem)] sm:max-w-lg">
           <DialogHeader>
             <DialogTitle>{editing ? 'Edit Customer' : 'Add Customer'}</DialogTitle>
           </DialogHeader>
@@ -132,9 +134,9 @@ export default function CustomersPage() {
             <div><label className="text-sm font-medium">Phone</label><Input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} /></div>
             <div><label className="text-sm font-medium">Email</label><Input value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} /></div>
             <div><label className="text-sm font-medium">Address</label><Input value={form.address} onChange={(e) => setForm({ ...form, address: e.target.value })} /></div>
-            <div className="flex justify-end gap-2">
-              <Button variant="outline" onClick={() => setDialogOpen(false)}>Cancel</Button>
-              <Button onClick={handleSave} className="bg-secondary hover:bg-secondary/90">Save</Button>
+            <div className="flex flex-wrap justify-end gap-2">
+              <Button variant="outline" onClick={() => setDialogOpen(false)} className="w-full sm:w-auto">Cancel</Button>
+              <Button onClick={handleSave} className="bg-secondary hover:bg-secondary/90 w-full sm:w-auto">Save</Button>
             </div>
           </div>
         </DialogContent>

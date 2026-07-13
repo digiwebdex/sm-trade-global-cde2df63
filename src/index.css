@@ -58,36 +58,127 @@
   * {
     @apply border-border;
   }
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
   body {
     @apply bg-background text-foreground font-sans;
     font-family: 'Inter', sans-serif;
+    overflow-x: hidden;
   }
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Poppins', sans-serif;
   }
+  img, svg, video, canvas {
+    max-width: 100%;
+    height: auto;
+  }
 }
 
+@layer components {
+  /* Page chrome */
+  .page-shell {
+    @apply space-y-4 sm:space-y-6;
+  }
+  .page-header {
+    @apply flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between;
+  }
+  .page-title {
+    @apply text-2xl sm:text-3xl font-bold text-foreground;
+  }
+  .page-subtitle {
+    @apply text-sm sm:text-base text-muted-foreground;
+  }
+
+  /* Tables scroll on small screens instead of blowing layout */
+  .table-responsive {
+    @apply w-full overflow-x-auto -mx-1 px-1;
+    -webkit-overflow-scrolling: touch;
+  }
+  .table-responsive table {
+    @apply min-w-[640px];
+  }
+
+  /* Forms: collapse dense grids on phones */
+  .form-grid-2 {
+    @apply grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4;
+  }
+  .form-grid-3 {
+    @apply grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4;
+  }
+
+  /* On-screen invoice preview: keep A4 size, allow horizontal scroll on mobile */
+  .document-preview-scale {
+    @apply w-full overflow-x-auto overflow-y-visible;
+    -webkit-overflow-scrolling: touch;
+  }
+  .document-preview-scale .document-preview-wrapper {
+    min-width: 794px;
+  }
+}
+
+/* ===== Screen-only document preview polish ===== */
+@media screen {
+  .document-preview-wrapper {
+    max-width: 100%;
+  }
+}
+
+/* ===== Print / PDF: exact A4 ===== */
 @media print {
-  .no-print {
+  .no-print,
+  [data-sidebar],
+  [data-sidebar-wrapper],
+  [data-mobile="true"],
+  header.sticky,
+  .sidebar,
+  nav {
     display: none !important;
   }
   .print-only {
     display: block !important;
   }
-  body {
+  html, body, #root {
     background: white !important;
     margin: 0 !important;
     padding: 0 !important;
+    width: 210mm !important;
+    max-width: 210mm !important;
+    overflow: visible !important;
+    height: auto !important;
+  }
+  /* Collapse app chrome so only the document prints */
+  .min-h-screen,
+  .flex-1,
+  main {
+    display: block !important;
+    width: 210mm !important;
+    max-width: 210mm !important;
+    min-height: 0 !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    background: white !important;
+  }
+  .document-preview-scale {
+    overflow: visible !important;
+    width: 210mm !important;
+    max-width: 210mm !important;
   }
   .document-preview-wrapper {
     width: 210mm !important;
+    min-width: 210mm !important;
     max-width: 210mm !important;
     box-shadow: none !important;
-    margin: 0 !important;
+    margin: 0 auto !important;
     height: auto !important;
     min-height: 0 !important;
     max-height: none !important;
     overflow: visible !important;
+    transform: none !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
   .document-border {
     border: none !important;
@@ -98,7 +189,6 @@
     display: table !important;
     width: 100% !important;
   }
-  /* Repeat header on every printed page; footer flows normally so it appears only on the last page */
   .doc-header-section {
     display: table-header-group;
   }
@@ -109,8 +199,8 @@
     display: table-row-group;
   }
   @page {
-    size: A4;
-    margin: 0 0 12.7mm 0; /* 0.5 inch bottom margin reserved for footer */
+    size: A4 portrait;
+    margin: 0 0 12.7mm 0;
   }
 }
 

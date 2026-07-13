@@ -2,8 +2,8 @@ import React from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import {
-  LayoutDashboard, Users, Package, FileText, FilePlus, Truck, ShoppingCart,
-  Settings, LogOut, UserCog, Menu, Database
+  LayoutDashboard, Users, Package, FileText, FilePlus, Truck,
+  Settings, LogOut, UserCog, Database
 } from 'lucide-react';
 import { NavLink } from '@/components/NavLink';
 import {
@@ -12,6 +12,7 @@ import {
   useSidebar,
 } from '@/components/ui/sidebar';
 import { Button } from '@/components/ui/button';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const navItems = [
   { title: 'Dashboard', url: '/dashboard', icon: LayoutDashboard },
@@ -31,7 +32,7 @@ const adminItems = [
 function AppSidebarContent() {
   const { user, logout, isAdmin } = useAuth();
   const navigate = useNavigate();
-  const { state } = useSidebar();
+  const { state, isMobile, setOpenMobile } = useSidebar();
   const collapsed = state === 'collapsed';
 
   const handleLogout = () => {
@@ -39,8 +40,12 @@ function AppSidebarContent() {
     navigate('/login');
   };
 
+  const closeMobileNav = () => {
+    if (isMobile) setOpenMobile(false);
+  };
+
   return (
-    <Sidebar collapsible="icon" className="border-r-0">
+    <Sidebar collapsible="icon" className="border-r-0 no-print">
       <div className="p-4 border-b border-sidebar-border">
         {!collapsed && (
           <div className="text-center">
@@ -59,9 +64,14 @@ function AppSidebarContent() {
               {navItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
-                    <NavLink to={item.url} className="hover:bg-sidebar-accent/50 text-sidebar-foreground" activeClassName="bg-sidebar-accent text-sidebar-primary font-medium">
+                    <NavLink
+                      to={item.url}
+                      onClick={closeMobileNav}
+                      className="hover:bg-sidebar-accent/50 text-sidebar-foreground"
+                      activeClassName="bg-sidebar-accent text-sidebar-primary font-medium"
+                    >
                       <item.icon className="mr-2 h-4 w-4" />
-                      {!collapsed && <span>{item.title}</span>}
+                      {(!collapsed || isMobile) && <span>{item.title}</span>}
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -80,9 +90,14 @@ function AppSidebarContent() {
                 {adminItems.map((item) => (
                   <SidebarMenuItem key={item.title}>
                     <SidebarMenuButton asChild>
-                      <NavLink to={item.url} className="hover:bg-sidebar-accent/50 text-sidebar-foreground" activeClassName="bg-sidebar-accent text-sidebar-primary font-medium">
+                      <NavLink
+                        to={item.url}
+                        onClick={closeMobileNav}
+                        className="hover:bg-sidebar-accent/50 text-sidebar-foreground"
+                        activeClassName="bg-sidebar-accent text-sidebar-primary font-medium"
+                      >
                         <item.icon className="mr-2 h-4 w-4" />
-                        {!collapsed && <span>{item.title}</span>}
+                        {(!collapsed || isMobile) && <span>{item.title}</span>}
                       </NavLink>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
@@ -94,15 +109,20 @@ function AppSidebarContent() {
       </SidebarContent>
 
       <div className="mt-auto p-3 border-t border-sidebar-border">
-        {!collapsed && (
+        {(!collapsed || isMobile) && (
           <div className="mb-2 px-2">
             <p className="text-xs text-sidebar-foreground/70 truncate">{user?.name}</p>
             <p className="text-xs text-sidebar-primary capitalize">{user?.role}</p>
           </div>
         )}
-        <Button variant="ghost" size="sm" onClick={handleLogout} className="w-full text-sidebar-foreground hover:bg-sidebar-accent/50 justify-start">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={handleLogout}
+          className="w-full text-sidebar-foreground hover:bg-sidebar-accent/50 justify-start"
+        >
           <LogOut className="h-4 w-4 mr-2" />
-          {!collapsed && 'Logout'}
+          {(!collapsed || isMobile) && 'Logout'}
         </Button>
       </div>
     </Sidebar>
@@ -110,16 +130,20 @@ function AppSidebarContent() {
 }
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
+  const isMobile = useIsMobile();
+
   return (
-    <SidebarProvider>
-      <div className="min-h-screen flex w-full">
+    <SidebarProvider defaultOpen={!isMobile}>
+      <div className="min-h-screen flex w-full max-w-[100vw] overflow-x-hidden">
         <AppSidebarContent />
-        <div className="flex-1 flex flex-col">
-          <header className="h-14 flex items-center border-b bg-card px-4 no-print">
-            <SidebarTrigger className="mr-4" />
-            <h1 className="text-lg font-semibold text-foreground">S. M. Trade International</h1>
+        <div className="flex-1 flex flex-col min-w-0">
+          <header className="h-14 flex items-center border-b bg-card px-3 sm:px-4 no-print sticky top-0 z-30">
+            <SidebarTrigger className="mr-2 sm:mr-4 shrink-0" />
+            <h1 className="text-sm sm:text-lg font-semibold text-foreground truncate">
+              S. M. Trade International
+            </h1>
           </header>
-          <main className="flex-1 p-6 overflow-auto">
+          <main className="flex-1 p-3 sm:p-4 md:p-6 overflow-auto min-w-0">
             {children}
           </main>
         </div>

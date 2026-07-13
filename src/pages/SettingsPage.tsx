@@ -68,7 +68,7 @@ function ChangePasswordCard() {
           <label className="text-sm font-medium">Confirm New Password</label>
           <Input type={showNew ? 'text' : 'password'} value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} autoComplete="new-password" />
         </div>
-        <Button onClick={handleSubmit} disabled={saving} className="bg-secondary hover:bg-secondary/90">
+        <Button onClick={handleSubmit} disabled={saving} className="bg-secondary hover:bg-secondary/90 w-full sm:w-auto">
           <KeyRound className="h-4 w-4 mr-2" /> {saving ? 'Updating...' : 'Update Password'}
         </Button>
       </CardContent>
@@ -91,7 +91,7 @@ function SignatureUpload({ label, value, onChange }: { label: string; value?: st
   return (
     <div>
       <label className="text-sm font-medium">{label}</label>
-      <div className="mt-1 border rounded-lg p-3 flex items-center gap-3 bg-muted/30">
+      <div className="mt-1 border rounded-lg p-3 flex flex-col sm:flex-row sm:items-center gap-3 bg-muted/30">
         {value ? (
           <>
             <div className="w-[120px] h-[50px] border rounded flex items-center justify-center bg-white">
@@ -141,24 +141,24 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="page-shell">
       <div>
-        <h1 className="text-3xl font-bold text-foreground">Settings</h1>
-        <p className="text-muted-foreground">Manage your account and company configuration</p>
+        <h1 className="page-title">Settings</h1>
+        <p className="page-subtitle">Manage your account and company configuration</p>
       </div>
 
       <ChangePasswordCard />
 
       {!isAdmin ? null : (<>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 sm:gap-6">
         <Card>
           <CardHeader><CardTitle>Company Information</CardTitle></CardHeader>
           <CardContent className="space-y-4">
             <div><label className="text-sm font-medium">Company Name</label><Input value={settings.name} onChange={(e) => setSettings({ ...settings, name: e.target.value })} /></div>
             <div><label className="text-sm font-medium">Tagline</label><Input value={settings.tagline} onChange={(e) => setSettings({ ...settings, tagline: e.target.value })} /></div>
             <div><label className="text-sm font-medium">Address</label><Textarea value={settings.address} onChange={(e) => setSettings({ ...settings, address: e.target.value })} /></div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="form-grid-2">
               <div><label className="text-sm font-medium">Phone</label><Input value={settings.phone} onChange={(e) => setSettings({ ...settings, phone: e.target.value })} /></div>
               <div><label className="text-sm font-medium">Email</label><Input value={settings.email} onChange={(e) => setSettings({ ...settings, email: e.target.value })} /></div>
             </div>
@@ -177,7 +177,7 @@ export default function SettingsPage() {
         </Card>
       </div>
 
-      <Button onClick={handleSave} className="bg-secondary hover:bg-secondary/90"><Save className="h-4 w-4 mr-2" /> Save Settings</Button>
+      <Button onClick={handleSave} className="bg-secondary hover:bg-secondary/90 w-full sm:w-auto"><Save className="h-4 w-4 mr-2" /> Save Settings</Button>
       </>)}
     </div>
   );

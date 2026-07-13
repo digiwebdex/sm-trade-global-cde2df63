@@ -67,24 +67,25 @@ export default function InvoicesPage() {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
+    <div className="page-shell">
+      <div className="page-header">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">Invoices / Bills</h1>
-          <p className="text-muted-foreground">Manage bills and invoices</p>
+          <h1 className="page-title">Invoices / Bills</h1>
+          <p className="page-subtitle">Manage bills and invoices</p>
         </div>
-        <Button onClick={() => navigate('/invoices/new')} className="bg-secondary hover:bg-secondary/90">
+        <Button onClick={() => navigate('/invoices/new')} className="bg-secondary hover:bg-secondary/90 w-full sm:w-auto">
           <Plus className="h-4 w-4 mr-2" /> New Invoice
         </Button>
       </div>
       <Card>
         <CardHeader>
-          <div className="relative max-w-sm">
+          <div className="relative w-full max-w-sm">
             <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
             <Input placeholder="Search by invoice # or customer..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-10" />
           </div>
         </CardHeader>
         <CardContent>
+          <div className="table-responsive">
           <Table>
             <TableHeader>
               <TableRow>
@@ -122,6 +123,7 @@ export default function InvoicesPage() {
               ))}
             </TableBody>
           </Table>
+          </div>
         </CardContent>
       </Card>
     </div>
@@ -253,16 +255,16 @@ function InvoiceForm({ editId, onDone }: { editId?: string; onDone: () => void }
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center gap-4">
+    <div className="page-shell">
+      <div className="flex flex-wrap items-center gap-3">
         <Button variant="ghost" onClick={onDone}><ArrowLeft className="h-4 w-4 mr-2" /> Back</Button>
-        <h1 className="text-2xl font-bold">{editId ? 'Edit Invoice' : 'New Invoice'}</h1>
+        <h1 className="text-xl sm:text-2xl font-bold">{editId ? 'Edit Invoice' : 'New Invoice'}</h1>
       </div>
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 sm:gap-6">
         <Card>
           <CardHeader><CardTitle>Invoice Details</CardTitle></CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="form-grid-2">
               <div><label className="text-sm font-medium">Invoice #</label><Input value={form.invoiceNumber} onChange={(e) => setForm({ ...form, invoiceNumber: e.target.value })} className="font-bold" /></div>
               <div><label className="text-sm font-medium">Date</label><Input type="date" value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} /></div>
             </div>
@@ -281,21 +283,21 @@ function InvoiceForm({ editId, onDone }: { editId?: string; onDone: () => void }
             </div>
 
             <div>
-              <div className="flex justify-between items-center mb-3">
+              <div className="flex flex-col gap-2 sm:flex-row sm:justify-between sm:items-center mb-3">
                 <label className="text-sm font-semibold flex items-center gap-2" style={{ color: '#1B3A5C' }}>
                   <span className="text-lg">$</span> Line Items
                 </label>
-                <Button size="sm" variant="outline" onClick={() => setForm({ ...form, items: [...form.items, emptyItem()] })}><Plus className="h-3 w-3 mr-1" /> Add Item</Button>
+                <Button size="sm" variant="outline" onClick={() => setForm({ ...form, items: [...form.items, emptyItem()] })} className="w-full sm:w-auto"><Plus className="h-3 w-3 mr-1" /> Add Item</Button>
               </div>
               <div className="space-y-3">
                 {form.items.map((item, i) => (
-                  <div key={item.id} className="border rounded-lg p-4 space-y-3">
+                  <div key={item.id} className="border rounded-lg p-3 sm:p-4 space-y-3">
                     <div className="flex items-center gap-2">
                       <span className="text-sm font-semibold text-muted-foreground">{i + 1}.</span>
-                      <Input className="flex-1" placeholder="Item description" value={item.description} onChange={(e) => updateItem(i, 'description', e.target.value)} />
+                      <Input className="flex-1 min-w-0" placeholder="Item description" value={item.description} onChange={(e) => updateItem(i, 'description', e.target.value)} />
                       <Button size="icon" variant="ghost" className="text-muted-foreground hover:text-destructive shrink-0" onClick={() => setForm({ ...form, items: form.items.filter((_, j) => j !== i) })}><Trash2 className="h-4 w-4" /></Button>
                     </div>
-                    <div className="grid grid-cols-3 gap-4">
+                    <div className="form-grid-3">
                       <div>
                         <label className="text-xs text-muted-foreground mb-1 block">Qty</label>
                         <Input type="number" value={item.quantity} onChange={(e) => updateItem(i, 'quantity', parseFloat(e.target.value) || 0)} className="text-center" />
@@ -326,15 +328,15 @@ function InvoiceForm({ editId, onDone }: { editId?: string; onDone: () => void }
               <Select value={form.status} onValueChange={(v: any) => setForm({ ...form, status: v })}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="draft">Draft</SelectItem><SelectItem value="processing">Processing</SelectItem><SelectItem value="sent">Due</SelectItem><SelectItem value="partial">Partial</SelectItem><SelectItem value="complete">Complete</SelectItem><SelectItem value="paid">Paid</SelectItem></SelectContent></Select></div>
 
             <div>
-              <div className="flex justify-between items-center mb-2">
+              <div className="flex flex-col gap-2 sm:flex-row sm:justify-between sm:items-center mb-2">
                 <label className="text-sm font-medium">Payments</label>
-                <Button size="sm" variant="outline" onClick={() => setForm({ ...form, payments: [...form.payments, emptyPayment()] })}><Plus className="h-3 w-3 mr-1" /> Add Payment</Button>
+                <Button size="sm" variant="outline" onClick={() => setForm({ ...form, payments: [...form.payments, emptyPayment()] })} className="w-full sm:w-auto"><Plus className="h-3 w-3 mr-1" /> Add Payment</Button>
               </div>
               {form.payments.map((p, i) => (
-                <div key={p.id} className="grid grid-cols-12 gap-2 items-center mb-2">
-                  <Input className="col-span-3" type="date" value={p.date} onChange={(e) => updatePayment(i, 'date', e.target.value)} />
+                <div key={p.id} className="grid grid-cols-1 sm:grid-cols-12 gap-2 items-center mb-2 border sm:border-0 rounded-md p-2 sm:p-0">
+                  <Input className="sm:col-span-3" type="date" value={p.date} onChange={(e) => updatePayment(i, 'date', e.target.value)} />
                   <Select value={p.method} onValueChange={(v: any) => updatePayment(i, 'method', v)}>
-                    <SelectTrigger className="col-span-2"><SelectValue /></SelectTrigger>
+                    <SelectTrigger className="sm:col-span-2"><SelectValue /></SelectTrigger>
                     <SelectContent>
                       <SelectItem value="Cash">Cash</SelectItem>
                       <SelectItem value="Bank">Bank</SelectItem>
@@ -343,9 +345,9 @@ function InvoiceForm({ editId, onDone }: { editId?: string; onDone: () => void }
                       <SelectItem value="Check">Check</SelectItem>
                     </SelectContent>
                   </Select>
-                  <Input className="col-span-3" placeholder="Description" value={p.description} onChange={(e) => updatePayment(i, 'description', e.target.value)} />
-                  <Input className="col-span-3" type="number" placeholder="Amount" value={p.amount} onChange={(e) => updatePayment(i, 'amount', parseFloat(e.target.value) || 0)} />
-                  <Button size="icon" variant="ghost" className="col-span-1 text-destructive" onClick={() => setForm({ ...form, payments: form.payments.filter((_, j) => j !== i) })}><Trash2 className="h-3 w-3" /></Button>
+                  <Input className="sm:col-span-3" placeholder="Description" value={p.description} onChange={(e) => updatePayment(i, 'description', e.target.value)} />
+                  <Input className="sm:col-span-3" type="number" placeholder="Amount" value={p.amount} onChange={(e) => updatePayment(i, 'amount', parseFloat(e.target.value) || 0)} />
+                  <Button size="icon" variant="ghost" className="sm:col-span-1 text-destructive" onClick={() => setForm({ ...form, payments: form.payments.filter((_, j) => j !== i) })}><Trash2 className="h-3 w-3" /></Button>
                 </div>
               ))}
               {totalPaid > 0 && (
@@ -362,7 +364,7 @@ function InvoiceForm({ editId, onDone }: { editId?: string; onDone: () => void }
             
             <div>
               <label className="text-sm font-medium mb-2 block">Signatures (optional - overrides company defaults)</label>
-              <div className="grid grid-cols-3 gap-3">
+              <div className="form-grid-3">
                 {[
                   { key: 'signatureReceived' as const, label: 'Received by' },
                   { key: 'signaturePrepared' as const, label: 'Prepared by' },
@@ -435,12 +437,12 @@ function InvoiceView({ id, onBack }: { id: string; onBack: () => void }) {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="page-shell">
       <div className="no-print">
-        <div className="flex items-center gap-4 mb-4">
-          <Button variant="ghost" onClick={onBack}><ArrowLeft className="h-4 w-4 mr-2" /> Back</Button>
-          <div>
-            <h1 className="text-2xl font-bold">{inv.invoiceNumber}</h1>
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4 mb-4">
+          <Button variant="ghost" onClick={onBack} className="w-fit"><ArrowLeft className="h-4 w-4 mr-2" /> Back</Button>
+          <div className="min-w-0">
+            <h1 className="text-xl sm:text-2xl font-bold truncate">{inv.invoiceNumber}</h1>
             <p className="text-sm text-muted-foreground">Invoice Preview</p>
           </div>
           <Badge variant="outline" className={
@@ -451,12 +453,11 @@ function InvoiceView({ id, onBack }: { id: string; onBack: () => void }) {
             {inv.status === 'sent' ? 'Unpaid' : inv.status === 'partial' ? 'Partial' : inv.status.charAt(0).toUpperCase() + inv.status.slice(1)}
           </Badge>
         </div>
-        <div className="flex flex-wrap gap-3 mb-4">
-          <Button onClick={handleDownload} variant="outline" className="gap-2"><Download className="h-4 w-4" /> Download Invoice</Button>
-          <Button onClick={() => printDocument(inv.invoiceNumber)} variant="outline" className="gap-2"><Printer className="h-4 w-4" /> Print</Button>
-          <Button onClick={handleShare} variant="outline" className="gap-2"><Eye className="h-4 w-4" /> Share</Button>
-          <Button onClick={() => navigate(`/invoices/edit-${id}`)} variant="outline" className="gap-2"><Pencil className="h-4 w-4" /> Quick Edit</Button>
-          <Button onClick={() => navigate(`/invoices/edit-${id}`)} className="bg-secondary hover:bg-secondary/90 gap-2"><Pencil className="h-4 w-4" /> Full Edit</Button>
+        <div className="flex flex-wrap gap-2 sm:gap-3 mb-4">
+          <Button onClick={handleDownload} variant="outline" className="gap-2 flex-1 sm:flex-none"><Download className="h-4 w-4" /> Download</Button>
+          <Button onClick={() => printDocument(inv.invoiceNumber)} variant="outline" className="gap-2 flex-1 sm:flex-none"><Printer className="h-4 w-4" /> Print</Button>
+          <Button onClick={handleShare} variant="outline" className="gap-2 flex-1 sm:flex-none"><Eye className="h-4 w-4" /> Share</Button>
+          <Button onClick={() => navigate(`/invoices/edit-${id}`)} className="bg-secondary hover:bg-secondary/90 gap-2 w-full sm:w-auto"><Pencil className="h-4 w-4" /> Edit</Button>
         </div>
       </div>
       <DocumentPreview 

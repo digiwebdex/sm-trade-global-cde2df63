@@ -60,14 +60,14 @@ export default function DashboardPage() {
   const recentInvoices = [...invoices].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).slice(0, 5);
 
   return (
-    <div className="space-y-6">
+    <div className="page-shell">
       <div>
-        <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
-        <p className="text-muted-foreground mt-1">Welcome back! Here's your business overview.</p>
+        <h1 className="page-title">Dashboard</h1>
+        <p className="page-subtitle">Welcome back! Here's your business overview.</p>
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {stats.map((stat) => (
           <Card key={stat.title} className="overflow-hidden">
             <CardContent className="p-0">
@@ -75,9 +75,9 @@ export default function DashboardPage() {
                 <div className={`${stat.color} p-4 flex items-center justify-center`}>
                   <stat.icon className="h-8 w-8 text-primary-foreground" />
                 </div>
-                <div className="p-4 flex-1">
+                <div className="p-3 sm:p-4 flex-1 min-w-0">
                   <p className="text-sm text-muted-foreground">{stat.title}</p>
-                  <p className="text-2xl font-bold text-foreground">{stat.value}</p>
+                  <p className="text-xl sm:text-2xl font-bold text-foreground truncate">{stat.value}</p>
                 </div>
               </div>
             </CardContent>
@@ -91,12 +91,12 @@ export default function DashboardPage() {
           <CardTitle className="text-lg">Quick Actions</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3">
             {quickActions.map((action) => (
               <Button
                 key={action.title}
                 variant="outline"
-                className="h-20 flex-col gap-2 hover:bg-secondary hover:text-secondary-foreground transition-colors"
+                className="h-16 sm:h-20 flex-col gap-1 sm:gap-2 hover:bg-secondary hover:text-secondary-foreground transition-colors text-xs sm:text-sm"
                 onClick={() => navigate(action.path)}
               >
                 <action.icon className="h-6 w-6" />
@@ -108,7 +108,7 @@ export default function DashboardPage() {
       </Card>
 
       {/* Summary Row */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4">
         <Card>
           <CardHeader>
             <CardTitle className="text-lg">Recent Invoices</CardTitle>
@@ -119,12 +119,12 @@ export default function DashboardPage() {
             ) : (
               <div className="space-y-3">
                 {recentInvoices.map((inv) => (
-                  <div key={inv.id} className="flex justify-between items-center border-b pb-2 last:border-0">
-                    <div>
-                      <p className="font-medium text-sm">{inv.invoiceNumber}</p>
-                      <p className="text-xs text-muted-foreground">{inv.customerName}</p>
+                  <div key={inv.id} className="flex flex-col gap-1 sm:flex-row sm:justify-between sm:items-center border-b pb-2 last:border-0">
+                    <div className="min-w-0">
+                      <p className="font-medium text-sm truncate">{inv.invoiceNumber}</p>
+                      <p className="text-xs text-muted-foreground truncate">{inv.customerName}</p>
                     </div>
-                    <div className="text-right">
+                    <div className="text-left sm:text-right shrink-0">
                       <p className="font-medium text-sm">৳{formatBDT(inv.totalAmount)}</p>
                       <span className={`text-xs px-2 py-0.5 rounded-full ${
                         inv.status === 'paid' ? 'bg-success/20 text-success' :

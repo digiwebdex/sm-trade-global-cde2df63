@@ -144,28 +144,28 @@ export default function BackupsPage() {
 
   if (!isAdmin) {
     return (
-      <div className="p-6">
+      <div className="page-shell">
         <p className="text-destructive">শুধুমাত্র Admin এই পেজ দেখতে পারবেন।</p>
       </div>
     );
   }
 
   return (
-    <div className="p-4 md:p-6 space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="page-shell">
+      <div className="page-header">
         <div>
-          <h1 className="text-2xl font-bold flex items-center gap-2">
-            <Database className="h-6 w-6" /> ব্যাকাপ ম্যানেজমেন্ট
+          <h1 className="page-title flex items-center gap-2">
+            <Database className="h-6 w-6 shrink-0" /> ব্যাকাপ ম্যানেজমেন্ট
           </h1>
-          <p className="text-sm text-muted-foreground mt-1">
+          <p className="page-subtitle">
             ম্যানুয়াল ব্যাকাপ তৈরি করুন এবং Google Drive-এ আপলোড করুন
           </p>
         </div>
-        <div className="flex gap-2">
-          <Button variant="outline" size="sm" onClick={fetchBackups} disabled={loading}>
+        <div className="flex flex-wrap gap-2 w-full sm:w-auto">
+          <Button variant="outline" size="sm" onClick={fetchBackups} disabled={loading} className="flex-1 sm:flex-none">
             <RefreshCw className={`h-4 w-4 mr-1 ${loading ? 'animate-spin' : ''}`} /> রিফ্রেশ
           </Button>
-          <Button onClick={createBackup} disabled={creating}>
+          <Button onClick={createBackup} disabled={creating} className="flex-1 sm:flex-none">
             {creating ? (
               <Loader2 className="h-4 w-4 mr-1 animate-spin" />
             ) : (

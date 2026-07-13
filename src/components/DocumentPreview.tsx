@@ -312,6 +312,7 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
   const statusInfo = statusConfig[props.status || 'draft'] || statusConfig.draft;
 
   return (
+    <div className="document-preview-scale">
     <div className="bg-white mx-auto shadow-lg document-preview-wrapper" id="document-preview" style={{ fontFamily: "'Segoe UI', Arial, sans-serif", color: '#333', fontSize: '13px', width: '794px', minHeight: '1123px', overflow: 'hidden' }}>
       <div style={{ border: '2px solid #d0d0d0', minHeight: '1119px', display: 'flex', flexDirection: 'column' }} className="document-border">
         
@@ -575,6 +576,7 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
           </div>
         </div>
       </div>
+    </div>
     </div>
   );
 }

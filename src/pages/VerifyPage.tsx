@@ -67,8 +67,8 @@ export default function VerifyPage() {
 
   if (loading) {
     return (
-      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f5f7fa' }}>
-        <p style={{ fontSize: '16px', color: '#666' }}>Loading...</p>
+      <div className="min-h-screen flex items-center justify-center bg-[#f5f7fa] p-4">
+        <p className="text-base text-muted-foreground">Loading...</p>
       </div>
     );
   }
@@ -93,21 +93,18 @@ export default function VerifyPage() {
   );
 
   return (
-    <div style={{ minHeight: '100vh', background: '#f0f2f5', paddingBottom: '40px' }}>
-      <div style={{
-        background: found ? GREEN : '#dc2626',
-        padding: '16px 24px',
-        textAlign: 'center',
-        color: 'white',
-        boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px' }}>
-          {found ? <CheckCircle size={28} strokeWidth={2.5} /> : <XCircle size={28} strokeWidth={2.5} />}
+    <div className="min-h-screen bg-[#f0f2f5] pb-10">
+      <div
+        className="px-4 py-4 sm:px-6 sm:py-5 text-center text-white shadow-md"
+        style={{ background: found ? GREEN : '#dc2626' }}
+      >
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 max-w-3xl mx-auto">
+          {found ? <CheckCircle size={28} strokeWidth={2.5} className="shrink-0" /> : <XCircle size={28} strokeWidth={2.5} className="shrink-0" />}
           <div>
-            <h1 style={{ fontSize: '20px', fontWeight: 'bold', margin: 0 }}>
+            <h1 className="text-lg sm:text-xl font-bold">
               {found ? '✅ Document Verified' : '❌ Document Not Found'}
             </h1>
-            <p style={{ fontSize: '13px', margin: '4px 0 0', opacity: 0.9 }}>
+            <p className="text-xs sm:text-sm mt-1 opacity-90">
               {found
                 ? `This ${typeLabel[type || ''] || 'document'} is authentic and issued by S. M. Trade International`
                 : 'This document could not be verified. It may not exist or the link is invalid.'}
@@ -118,25 +115,23 @@ export default function VerifyPage() {
 
       {found && document && (
         <>
-          <div style={{
-            maxWidth: '794px', margin: '20px auto 16px', padding: '12px 24px',
-            background: 'white', borderRadius: '8px', boxShadow: '0 1px 4px rgba(0,0,0,0.1)',
-            display: 'flex', alignItems: 'center', gap: '12px',
-          }}>
-            <FileText size={20} color={NAVY} />
-            <div>
-              <span style={{ fontSize: '14px', fontWeight: 'bold', color: NAVY }}>{documentNumber}</span>
-              <span style={{ fontSize: '12px', color: '#888', marginLeft: '12px' }}>
-                {typeLabel[type || '']} • {String(document.date || '')}
-              </span>
+          <div className="max-w-[794px] mx-auto mt-4 sm:mt-5 px-4 sm:px-6 py-3 bg-white rounded-lg shadow-sm flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
+            <div className="flex items-center gap-3 min-w-0">
+              <FileText size={20} color={NAVY} className="shrink-0" />
+              <div className="min-w-0">
+                <span className="text-sm font-bold block truncate" style={{ color: NAVY }}>{documentNumber}</span>
+                <span className="text-xs text-muted-foreground">
+                  {typeLabel[type || '']} • {String(document.date || '')}
+                </span>
+              </div>
             </div>
-            <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: GREEN }} />
-              <span style={{ fontSize: '12px', color: GREEN, fontWeight: 'bold' }}>Verified</span>
+            <div className="flex items-center gap-2 sm:ml-auto shrink-0">
+              <div className="w-2 h-2 rounded-full" style={{ backgroundColor: GREEN }} />
+              <span className="text-xs font-bold" style={{ color: GREEN }}>Verified</span>
             </div>
           </div>
 
-          <div style={{ maxWidth: '840px', margin: '0 auto', padding: '0 20px' }}>
+          <div className="max-w-[840px] mx-auto px-4 sm:px-5">
             <DocumentPreview
               type={previewType}
               documentNumber={documentNumber}
@@ -168,7 +163,7 @@ export default function VerifyPage() {
         </>
       )}
 
-      <div style={{ textAlign: 'center', padding: '24px', fontSize: '12px', color: '#999' }}>
+      <div className="text-center px-4 py-6 text-xs text-muted-foreground">
         © {new Date().getFullYear()} S. M. Trade International. All rights reserved.
       </div>
     </div>

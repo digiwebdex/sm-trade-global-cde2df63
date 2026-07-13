@@ -64,22 +64,23 @@ export default function PurchaseOrdersPage() {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
+    <div className="page-shell">
+      <div className="page-header">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">Purchase Orders</h1>
-          <p className="text-muted-foreground">Manage supplier orders</p>
+          <h1 className="page-title">Purchase Orders</h1>
+          <p className="page-subtitle">Manage supplier orders</p>
         </div>
-        <Button onClick={() => navigate('/purchase-orders/new')} className="bg-secondary hover:bg-secondary/90"><Plus className="h-4 w-4 mr-2" /> New PO</Button>
+        <Button onClick={() => navigate('/purchase-orders/new')} className="bg-secondary hover:bg-secondary/90 w-full sm:w-auto"><Plus className="h-4 w-4 mr-2" /> New PO</Button>
       </div>
       <Card>
         <CardHeader>
-          <div className="relative max-w-sm">
+          <div className="relative w-full max-w-sm">
             <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
             <Input placeholder="Search by PO # or supplier..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-10" />
           </div>
         </CardHeader>
         <CardContent>
+          <div className="table-responsive">
           <Table>
             <TableHeader>
               <TableRow>
@@ -117,6 +118,7 @@ export default function PurchaseOrdersPage() {
               ))}
             </TableBody>
           </Table>
+          </div>
         </CardContent>
       </Card>
     </div>
@@ -200,40 +202,43 @@ function POForm({ editId, onDone }: { editId?: string; onDone: () => void }) {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center gap-4"><Button variant="ghost" onClick={onDone}><ArrowLeft className="h-4 w-4 mr-2" /> Back</Button><h1 className="text-2xl font-bold">{editId ? 'Edit PO' : 'New Purchase Order'}</h1></div>
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div className="page-shell">
+      <div className="flex flex-wrap items-center gap-3">
+        <Button variant="ghost" onClick={onDone}><ArrowLeft className="h-4 w-4 mr-2" /> Back</Button>
+        <h1 className="text-xl sm:text-2xl font-bold">{editId ? 'Edit PO' : 'New Purchase Order'}</h1>
+      </div>
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 sm:gap-6">
         <Card>
           <CardHeader><CardTitle>PO Details</CardTitle></CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="form-grid-2">
               <div><label className="text-sm font-medium">PO #</label><Input value={form.poNumber} onChange={(e) => setForm({ ...form, poNumber: e.target.value })} className="font-bold" /></div>
               <div><label className="text-sm font-medium">Date</label><Input type="date" value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} /></div>
             </div>
             <div><label className="text-sm font-medium">Supplier Name *</label><Input value={form.supplierName} onChange={(e) => setForm({ ...form, supplierName: e.target.value })} /></div>
             <div><label className="text-sm font-medium">Supplier Address</label><Textarea value={form.supplierAddress} onChange={(e) => setForm({ ...form, supplierAddress: e.target.value })} placeholder="Address" rows={2} /></div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="form-grid-2">
               <div><label className="text-sm font-medium">Phone</label><Input value={form.supplierPhone} onChange={(e) => setForm({ ...form, supplierPhone: e.target.value })} /></div>
               <div><label className="text-sm font-medium">Email</label><Input value={form.supplierEmail} onChange={(e) => setForm({ ...form, supplierEmail: e.target.value })} /></div>
             </div>
             <div><label className="text-sm font-medium">Status</label>
               <Select value={form.status} onValueChange={(v: any) => setForm({ ...form, status: v })}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="draft">Draft</SelectItem><SelectItem value="processing">Processing</SelectItem><SelectItem value="sent">Sent</SelectItem><SelectItem value="received">Received</SelectItem><SelectItem value="complete">Complete</SelectItem></SelectContent></Select></div>
             <div>
-              <div className="flex justify-between items-center mb-3">
+              <div className="flex flex-col gap-2 sm:flex-row sm:justify-between sm:items-center mb-3">
                 <label className="text-sm font-semibold flex items-center gap-2" style={{ color: '#1B3A5C' }}>
                   <span className="text-lg">$</span> Line Items
                 </label>
-                <Button size="sm" variant="outline" onClick={() => setForm({ ...form, items: [...form.items, emptyItem()] })}><Plus className="h-3 w-3 mr-1" /> Add Item</Button>
+                <Button size="sm" variant="outline" onClick={() => setForm({ ...form, items: [...form.items, emptyItem()] })} className="w-full sm:w-auto"><Plus className="h-3 w-3 mr-1" /> Add Item</Button>
               </div>
               <div className="space-y-3">
                 {form.items.map((item, i) => (
-                  <div key={item.id} className="border rounded-lg p-4 space-y-3">
+                  <div key={item.id} className="border rounded-lg p-3 sm:p-4 space-y-3">
                     <div className="flex items-center gap-2">
                       <span className="text-sm font-semibold text-muted-foreground">{i + 1}.</span>
-                      <Input className="flex-1" placeholder="Item description" value={item.description} onChange={(e) => updateItem(i, 'description', e.target.value)} />
+                      <Input className="flex-1 min-w-0" placeholder="Item description" value={item.description} onChange={(e) => updateItem(i, 'description', e.target.value)} />
                       <Button size="icon" variant="ghost" className="text-muted-foreground hover:text-destructive shrink-0" onClick={() => setForm({ ...form, items: form.items.filter((_, j) => j !== i) })}><Trash2 className="h-4 w-4" /></Button>
                     </div>
-                    <div className="grid grid-cols-3 gap-4">
+                    <div className="form-grid-3">
                       <div>
                         <label className="text-xs text-muted-foreground mb-1 block">Qty</label>
                         <Input type="number" value={item.quantity} onChange={(e) => updateItem(i, 'quantity', parseFloat(e.target.value) || 0)} className="text-center" />
@@ -258,7 +263,7 @@ function POForm({ editId, onDone }: { editId?: string; onDone: () => void }) {
             <div><label className="text-sm font-medium">Amount in Words</label><Input value={form.amountInWords} onChange={(e) => setForm({ ...form, amountInWords: e.target.value })} placeholder="Auto-generated if empty" /></div>
             <div>
               <label className="text-sm font-medium mb-2 block">Signatures</label>
-              <div className="grid grid-cols-3 gap-3">
+              <div className="form-grid-3">
                 {([['signatureReceived','Received by'],['signaturePrepared','Prepared by'],['signatureAuthorize','Authorize by']] as const).map(([key, label]) => (
                   <SignatureUploadField key={key} label={label} value={(form as any)[key]} onChange={(v) => setForm({ ...form, [key]: v })} />
                 ))}
@@ -286,14 +291,21 @@ function POView({ id, onBack }: { id: string; onBack: () => void }) {
   if (!o) return <div>Not found</div>;
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center gap-4 no-print">
-        <Button variant="ghost" onClick={onBack}><ArrowLeft className="h-4 w-4 mr-2" /> Back</Button>
-        <h1 className="text-2xl font-bold">{o.poNumber}</h1>
-        <Badge variant="outline" className={o.status === 'received' ? 'bg-emerald-100 text-emerald-700' : o.status === 'sent' ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-600'}>
-          {o.status.charAt(0).toUpperCase() + o.status.slice(1)}
-        </Badge>
-        <Button onClick={() => printDocument(o.poNumber)} variant="outline"><Printer className="h-4 w-4 mr-2" /> Print / PDF</Button>
+    <div className="page-shell">
+      <div className="no-print">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4 mb-4">
+          <Button variant="ghost" onClick={onBack} className="w-fit"><ArrowLeft className="h-4 w-4 mr-2" /> Back</Button>
+          <div className="min-w-0">
+            <h1 className="text-xl sm:text-2xl font-bold truncate">{o.poNumber}</h1>
+            <p className="text-sm text-muted-foreground">Purchase Order Preview</p>
+          </div>
+          <Badge variant="outline" className={o.status === 'received' ? 'bg-emerald-100 text-emerald-700' : o.status === 'sent' ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-600'}>
+            {o.status.charAt(0).toUpperCase() + o.status.slice(1)}
+          </Badge>
+        </div>
+        <div className="flex flex-wrap gap-2 sm:gap-3 mb-4">
+          <Button onClick={() => printDocument(o.poNumber)} variant="outline" className="gap-2 flex-1 sm:flex-none"><Printer className="h-4 w-4" /> Print / PDF</Button>
+        </div>
       </div>
       <DocumentPreview type="purchaseOrder" documentNumber={o.poNumber} date={o.date} customerName={o.supplierName} customerAddress={o.supplierAddress} customerPhone={o.supplierPhone} supplierName={o.supplierName} supplierAddress={o.supplierAddress} items={o.items} totalAmount={o.totalAmount} notes={o.notes} />
     </div>

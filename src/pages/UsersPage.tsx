@@ -28,7 +28,7 @@ export default function UsersPage() {
   };
   useEffect(() => { load(); }, []);
 
-  if (!isAdmin) return <div className="p-8 text-center text-muted-foreground">Admin access required</div>;
+  if (!isAdmin) return <div className="page-shell p-4 sm:p-8 text-center text-muted-foreground">Admin access required</div>;
 
   const handleSave = async () => {
     const cleanForm = { ...form, username: form.username.trim(), name: form.name.trim(), email: form.email.trim() };
@@ -68,19 +68,20 @@ export default function UsersPage() {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
+    <div className="page-shell">
+      <div className="page-header">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">User Management</h1>
-          <p className="text-muted-foreground">Manage staff accounts</p>
+          <h1 className="page-title">User Management</h1>
+          <p className="page-subtitle">Manage staff accounts</p>
         </div>
-        <Button onClick={() => { setEditing(null); setForm(emptyUser); setDialogOpen(true); }} className="bg-secondary hover:bg-secondary/90">
+        <Button onClick={() => { setEditing(null); setForm(emptyUser); setDialogOpen(true); }} className="bg-secondary hover:bg-secondary/90 w-full sm:w-auto">
           <Plus className="h-4 w-4 mr-2" /> Add User
         </Button>
       </div>
 
       <Card>
         <CardContent className="pt-6">
+          <div className="table-responsive">
           <Table>
             <TableHeader>
               <TableRow>
@@ -108,11 +109,12 @@ export default function UsersPage() {
               ))}
             </TableBody>
           </Table>
+          </div>
         </CardContent>
       </Card>
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent>
+        <DialogContent className="max-w-[calc(100vw-2rem)] sm:max-w-lg">
           <DialogHeader><DialogTitle>{editing ? 'Edit User' : 'Add User'}</DialogTitle></DialogHeader>
           <div className="space-y-4">
             <div><label className="text-sm font-medium">Name *</label><Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} /></div>
@@ -126,9 +128,9 @@ export default function UsersPage() {
                 <SelectContent><SelectItem value="admin">Admin</SelectItem><SelectItem value="staff">Staff</SelectItem></SelectContent>
               </Select>
             </div>
-            <div className="flex justify-end gap-2">
-              <Button variant="outline" onClick={() => setDialogOpen(false)}>Cancel</Button>
-              <Button onClick={handleSave} className="bg-secondary hover:bg-secondary/90">Save</Button>
+            <div className="flex flex-wrap justify-end gap-2">
+              <Button variant="outline" onClick={() => setDialogOpen(false)} className="w-full sm:w-auto">Cancel</Button>
+              <Button onClick={handleSave} className="bg-secondary hover:bg-secondary/90 w-full sm:w-auto">Save</Button>
             </div>
           </div>
         </DialogContent>

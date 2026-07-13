@@ -65,22 +65,23 @@ export default function QuotationsPage() {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
+    <div className="page-shell">
+      <div className="page-header">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">Quotations</h1>
-          <p className="text-muted-foreground">Manage quotations</p>
+          <h1 className="page-title">Quotations</h1>
+          <p className="page-subtitle">Manage quotations</p>
         </div>
-        <Button onClick={() => navigate('/quotations/new')} className="bg-secondary hover:bg-secondary/90"><Plus className="h-4 w-4 mr-2" /> New Quotation</Button>
+        <Button onClick={() => navigate('/quotations/new')} className="bg-secondary hover:bg-secondary/90 w-full sm:w-auto"><Plus className="h-4 w-4 mr-2" /> New Quotation</Button>
       </div>
       <Card>
         <CardHeader>
-          <div className="relative max-w-sm">
+          <div className="relative w-full max-w-sm">
             <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
             <Input placeholder="Search by quotation # or customer..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-10" />
           </div>
         </CardHeader>
         <CardContent>
+          <div className="table-responsive">
           <Table>
             <TableHeader>
               <TableRow>
@@ -118,6 +119,7 @@ export default function QuotationsPage() {
               ))}
             </TableBody>
           </Table>
+          </div>
         </CardContent>
       </Card>
     </div>
@@ -213,13 +215,16 @@ function QuotationForm({ editId, onDone }: { editId?: string; onDone: () => void
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center gap-4"><Button variant="ghost" onClick={onDone}><ArrowLeft className="h-4 w-4 mr-2" /> Back</Button><h1 className="text-2xl font-bold">{editId ? 'Edit Quotation' : 'New Quotation'}</h1></div>
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div className="page-shell">
+      <div className="flex flex-wrap items-center gap-3">
+        <Button variant="ghost" onClick={onDone}><ArrowLeft className="h-4 w-4 mr-2" /> Back</Button>
+        <h1 className="text-xl sm:text-2xl font-bold">{editId ? 'Edit Quotation' : 'New Quotation'}</h1>
+      </div>
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 sm:gap-6">
         <Card>
           <CardHeader><CardTitle>Quotation Details</CardTitle></CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="form-grid-2">
               <div><label className="text-sm font-medium">Quotation #</label><Input value={form.quotationNumber} onChange={(e) => setForm({ ...form, quotationNumber: e.target.value })} className="font-bold" /></div>
               <div><label className="text-sm font-medium">Date</label><Input type="date" value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} /></div>
             </div>
@@ -230,27 +235,27 @@ function QuotationForm({ editId, onDone }: { editId?: string; onDone: () => void
               <div><label className="text-sm font-medium">Customer Address</label><Textarea value={form.customerAddress} onChange={(e) => setForm({ ...form, customerAddress: e.target.value })} placeholder="Address" rows={2} /></div>
               <div><label className="text-sm font-medium">Customer Phone</label><Input value={form.customerPhone} onChange={(e) => setForm({ ...form, customerPhone: e.target.value })} placeholder="Phone" /></div>
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="form-grid-2">
               <div><label className="text-sm font-medium">Valid Until</label><Input type="date" value={form.validUntil} onChange={(e) => setForm({ ...form, validUntil: e.target.value })} /></div>
               <div><label className="text-sm font-medium">Status</label>
                 <Select value={form.status} onValueChange={(v: any) => setForm({ ...form, status: v })}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="draft">Draft</SelectItem><SelectItem value="processing">Processing</SelectItem><SelectItem value="sent">Sent</SelectItem><SelectItem value="accepted">Accepted</SelectItem><SelectItem value="complete">Complete</SelectItem><SelectItem value="rejected">Rejected</SelectItem></SelectContent></Select></div>
             </div>
             <div>
-              <div className="flex justify-between items-center mb-3">
+              <div className="flex flex-col gap-2 sm:flex-row sm:justify-between sm:items-center mb-3">
                 <label className="text-sm font-semibold flex items-center gap-2" style={{ color: '#1B3A5C' }}>
                   <span className="text-lg">$</span> Line Items
                 </label>
-                <Button size="sm" variant="outline" onClick={() => setForm({ ...form, items: [...form.items, emptyItem()] })}><Plus className="h-3 w-3 mr-1" /> Add Item</Button>
+                <Button size="sm" variant="outline" onClick={() => setForm({ ...form, items: [...form.items, emptyItem()] })} className="w-full sm:w-auto"><Plus className="h-3 w-3 mr-1" /> Add Item</Button>
               </div>
               <div className="space-y-3">
                 {form.items.map((item, i) => (
-                  <div key={item.id} className="border rounded-lg p-4 space-y-3">
+                  <div key={item.id} className="border rounded-lg p-3 sm:p-4 space-y-3">
                     <div className="flex items-center gap-2">
                       <span className="text-sm font-semibold text-muted-foreground">{i + 1}.</span>
-                      <Input className="flex-1" placeholder="Item description" value={item.description} onChange={(e) => updateItem(i, 'description', e.target.value)} />
+                      <Input className="flex-1 min-w-0" placeholder="Item description" value={item.description} onChange={(e) => updateItem(i, 'description', e.target.value)} />
                       <Button size="icon" variant="ghost" className="text-muted-foreground hover:text-destructive shrink-0" onClick={() => setForm({ ...form, items: form.items.filter((_, j) => j !== i) })}><Trash2 className="h-4 w-4" /></Button>
                     </div>
-                    <div className="grid grid-cols-3 gap-4">
+                    <div className="form-grid-3">
                       <div>
                         <label className="text-xs text-muted-foreground mb-1 block">Qty</label>
                         <Input type="number" value={item.quantity} onChange={(e) => updateItem(i, 'quantity', parseFloat(e.target.value) || 0)} className="text-center" />
@@ -275,7 +280,7 @@ function QuotationForm({ editId, onDone }: { editId?: string; onDone: () => void
             <div><label className="text-sm font-medium">Amount in Words</label><Input value={form.amountInWords} onChange={(e) => setForm({ ...form, amountInWords: e.target.value })} placeholder="Auto-generated if empty" /></div>
             <div>
               <label className="text-sm font-medium mb-2 block">Signatures</label>
-              <div className="grid grid-cols-3 gap-3">
+              <div className="form-grid-3">
                 {([['signatureReceived','Received by'],['signaturePrepared','Prepared by'],['signatureAuthorize','Authorize by']] as const).map(([key, label]) => (
                   <SignatureUploadField key={key} label={label} value={form[key]} onChange={(v) => setForm({ ...form, [key]: v })} />
                 ))}
@@ -310,24 +315,23 @@ function QuotationView({ id, onBack }: { id: string; onBack: () => void }) {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="page-shell">
       <div className="no-print">
-        <div className="flex items-center gap-4 mb-4">
-          <Button variant="ghost" onClick={onBack}><ArrowLeft className="h-4 w-4 mr-2" /> Back</Button>
-          <div>
-            <h1 className="text-2xl font-bold">{q.quotationNumber}</h1>
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4 mb-4">
+          <Button variant="ghost" onClick={onBack} className="w-fit"><ArrowLeft className="h-4 w-4 mr-2" /> Back</Button>
+          <div className="min-w-0">
+            <h1 className="text-xl sm:text-2xl font-bold truncate">{q.quotationNumber}</h1>
             <p className="text-sm text-muted-foreground">Quotation Preview</p>
           </div>
           <Badge variant="outline" className={q.status === 'accepted' ? 'bg-emerald-100 text-emerald-700' : q.status === 'rejected' ? 'bg-red-100 text-red-700' : q.status === 'sent' ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-600'}>
             {q.status.charAt(0).toUpperCase() + q.status.slice(1)}
           </Badge>
         </div>
-        <div className="flex flex-wrap gap-3 mb-4">
-          <Button onClick={() => downloadDocument(q.quotationNumber)} variant="outline" className="gap-2"><Download className="h-4 w-4" /> Download Quotation</Button>
-          <Button onClick={() => printDocument(q.quotationNumber)} variant="outline" className="gap-2"><Printer className="h-4 w-4" /> Print</Button>
-          <Button onClick={handleShare} variant="outline" className="gap-2"><Eye className="h-4 w-4" /> Share</Button>
-          <Button onClick={() => navigate(`/quotations/edit-${id}`)} variant="outline" className="gap-2"><Pencil className="h-4 w-4" /> Quick Edit</Button>
-          <Button onClick={() => navigate(`/quotations/edit-${id}`)} className="bg-secondary hover:bg-secondary/90 gap-2"><Pencil className="h-4 w-4" /> Full Edit</Button>
+        <div className="flex flex-wrap gap-2 sm:gap-3 mb-4">
+          <Button onClick={() => downloadDocument(q.quotationNumber)} variant="outline" className="gap-2 flex-1 sm:flex-none"><Download className="h-4 w-4" /> Download</Button>
+          <Button onClick={() => printDocument(q.quotationNumber)} variant="outline" className="gap-2 flex-1 sm:flex-none"><Printer className="h-4 w-4" /> Print</Button>
+          <Button onClick={handleShare} variant="outline" className="gap-2 flex-1 sm:flex-none"><Eye className="h-4 w-4" /> Share</Button>
+          <Button onClick={() => navigate(`/quotations/edit-${id}`)} className="bg-secondary hover:bg-secondary/90 gap-2 w-full sm:w-auto"><Pencil className="h-4 w-4" /> Edit</Button>
         </div>
       </div>
       <DocumentPreview type="quotation" documentNumber={q.quotationNumber} date={q.date} customerName={q.customerName} customerAddress={q.customerAddress} customerPhone={q.customerPhone} items={q.items} totalAmount={q.totalAmount} notes={q.notes} amountInWords={q.amountInWords} status={q.status} signatureReceived={q.signatureReceived} signaturePrepared={q.signaturePrepared} signatureAuthorize={q.signatureAuthorize} />

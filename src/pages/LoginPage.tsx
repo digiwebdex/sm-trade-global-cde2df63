@@ -37,13 +37,13 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-primary p-4">
+    <div className="min-h-screen flex items-center justify-center bg-primary p-4 sm:p-6">
       <Card className="w-full max-w-md shadow-2xl">
         <CardHeader className="text-center space-y-2">
-          <div className="mx-auto w-16 h-16 bg-primary rounded-xl flex items-center justify-center mb-2">
-            <span className="text-primary-foreground font-bold text-xl">SM</span>
+          <div className="mx-auto w-14 h-14 sm:w-16 sm:h-16 bg-primary rounded-xl flex items-center justify-center mb-2">
+            <span className="text-primary-foreground font-bold text-lg sm:text-xl">SM</span>
           </div>
-          <CardTitle className="text-2xl">S. M. Trade International</CardTitle>
+          <CardTitle className="text-xl sm:text-2xl">S. M. Trade International</CardTitle>
           <CardDescription>Sign in to your account</CardDescription>
         </CardHeader>
         <CardContent>
@@ -92,7 +92,7 @@ export default function LoginPage() {
       </Card>
 
       <Dialog open={forgotOpen} onOpenChange={setForgotOpen}>
-        <DialogContent>
+        <DialogContent className="max-w-[calc(100vw-2rem)] sm:max-w-lg">
           <DialogHeader>
             <DialogTitle>Forgot Password</DialogTitle>
             <DialogDescription>
@@ -112,7 +112,7 @@ export default function LoginPage() {
               Admin contact: <span className="font-medium">admin@smtradeint.com</span>
             </p>
           </div>
-          <DialogFooter>
+          <DialogFooter className="flex-col-reverse sm:flex-row gap-2">
             <Button
               type="button"
               onClick={() => {
@@ -126,7 +126,7 @@ export default function LoginPage() {
                 setForgotOpen(false);
                 toast.success('Opening email to admin...');
               }}
-              className="bg-secondary hover:bg-secondary/90 text-secondary-foreground"
+              className="bg-secondary hover:bg-secondary/90 text-secondary-foreground w-full sm:w-auto"
             >
               Send Request
             </Button>
