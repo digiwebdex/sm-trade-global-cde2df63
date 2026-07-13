@@ -30,13 +30,13 @@ export default function DashboardPage() {
 
   useEffect(() => {
     Promise.all([
-      api.getDashboardStats().then((d: any) => setServerStats(d)).catch(() => {}),
-      api.getInvoices().then((d: any) => setInvoices(d)).catch(() => {}),
-      api.getQuotations().then((d: any) => setQuotations(d)).catch(() => {}),
-      api.getChallans().then((d: any) => setChallans(d)).catch(() => {}),
-      api.getPurchaseOrders().then((d: any) => setPurchaseOrders(d)).catch(() => {}),
-      api.getCustomers().then((d: any) => setCustomers(d)).catch(() => {}),
-      api.getProducts().then((d: any) => setProducts(d)).catch(() => {}),
+      api.getDashboardStats().then((d) => setServerStats(d as DashboardStats)).catch(() => undefined),
+      api.getInvoices().then((d) => setInvoices(d as Invoice[])).catch(() => undefined),
+      api.getQuotations().then((d) => setQuotations(d as Quotation[])).catch(() => undefined),
+      api.getChallans().then((d) => setChallans(d as Challan[])).catch(() => undefined),
+      api.getPurchaseOrders().then((d) => setPurchaseOrders(d as PurchaseOrder[])).catch(() => undefined),
+      api.getCustomers().then((d) => setCustomers(d as Customer[])).catch(() => undefined),
+      api.getProducts().then((d) => setProducts(d as Product[])).catch(() => undefined),
     ]);
   }, []);
 

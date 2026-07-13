@@ -257,9 +257,12 @@ export default function DocumentPreview(props: DocumentPreviewProps) {
   const [settings, setSettings] = useState<CompanySettings>(defaultSettings);
 
   useEffect(() => {
-    api.getSettings().then((d: any) => {
-      if (d && d.name) setSettings(d);
-    }).catch(() => {});
+    api.getSettings().then((d: unknown) => {
+      const settingsData = d as CompanySettings | null;
+      if (settingsData && settingsData.name) setSettings(settingsData);
+    }).catch(() => {
+      // Keep defaults when settings are unavailable (e.g. public verify page)
+    });
   }, []);
 
   const { type, documentNumber, date, customerName, customerAddress, customerPhone, customerEmail, items, challanItems, totalAmount, totalQuantity, orderNo, notes, tax, totalPaid, payments } = props;

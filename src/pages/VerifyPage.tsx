@@ -1,38 +1,68 @@
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { api } from '@/utils/api';
-import { Invoice, Quotation, Challan, PurchaseOrder } from '@/types';
+import { LineItem, ChallanItem, Payment } from '@/types';
 import DocumentPreview from '@/components/DocumentPreview';
 import { CheckCircle, XCircle, FileText } from 'lucide-react';
 
 const NAVY = '#1B3A5C';
 const GREEN = '#16a34a';
 
+type PreviewType = 'invoice' | 'quotation' | 'challan' | 'purchaseOrder';
+
+interface VerifyDoc {
+  invoiceNumber?: string;
+  quotationNumber?: string;
+  challanNumber?: string;
+  poNumber?: string;
+  date?: string;
+  customerName?: string;
+  customerAddress?: string;
+  customerPhone?: string;
+  customerEmail?: string;
+  supplierName?: string;
+  supplierAddress?: string;
+  supplierPhone?: string;
+  supplierEmail?: string;
+  items?: LineItem[] | ChallanItem[];
+  totalAmount?: number;
+  totalQuantity?: number;
+  orderNo?: string;
+  status?: string;
+  notes?: string;
+  tax?: number;
+  totalPaid?: number;
+  payments?: Payment[];
+  amountInWords?: string;
+  signatureReceived?: string;
+  signaturePrepared?: string;
+  signatureAuthorize?: string;
+}
+
 export default function VerifyPage() {
   const { type, docId } = useParams<{ type: string; docId: string }>();
-  const [document, setDocument] = useState<any>(null);
+  const [document, setDocument] = useState<VerifyDoc | null>(null);
   const [loading, setLoading] = useState(true);
   const [found, setFound] = useState(false);
 
   useEffect(() => {
-    const fetchMap: Record<string, { fetch: () => Promise<unknown>; numberField: string }> = {
-      invoice: { fetch: () => api.getInvoices(), numberField: 'invoiceNumber' },
-      quotation: { fetch: () => api.getQuotations(), numberField: 'quotationNumber' },
-      challan: { fetch: () => api.getChallans(), numberField: 'challanNumber' },
-      'purchase-order': { fetch: () => api.getPurchaseOrders(), numberField: 'poNumber' },
-    };
-
-    const config = fetchMap[type || ''];
-    if (!config || !docId) { setLoading(false); return; }
-
-    config.fetch().then((docs: any) => {
-      const doc = docs.find((d: any) => {
-        const num = d[config.numberField]?.toLowerCase().replace(/[^a-z0-9-]/g, '-');
-        return num === docId;
-      });
-      if (doc) { setDocument(doc); setFound(true); }
+    if (!type || !docId) {
       setLoading(false);
-    }).catch(() => setLoading(false));
+      return;
+    }
+
+    api.verifyDocument(type, docId)
+      .then((payload) => {
+        if (payload?.document) {
+          setDocument(payload.document as VerifyDoc);
+          setFound(true);
+        }
+        setLoading(false);
+      })
+      .catch(() => {
+        setFound(false);
+        setLoading(false);
+      });
   }, [type, docId]);
 
   if (loading) {
@@ -50,12 +80,17 @@ export default function VerifyPage() {
     'purchase-order': 'Purchase Order',
   };
 
-  const docType: Record<string, string> = {
+  const docTypeMap: Record<string, PreviewType> = {
     invoice: 'invoice',
     quotation: 'quotation',
     challan: 'challan',
     'purchase-order': 'purchaseOrder',
   };
+
+  const previewType = docTypeMap[type || ''] || 'invoice';
+  const documentNumber = String(
+    document?.invoiceNumber || document?.quotationNumber || document?.challanNumber || document?.poNumber || '',
+  );
 
   return (
     <div style={{ minHeight: '100vh', background: '#f0f2f5', paddingBottom: '40px' }}>
@@ -75,8 +110,7 @@ export default function VerifyPage() {
             <p style={{ fontSize: '13px', margin: '4px 0 0', opacity: 0.9 }}>
               {found
                 ? `This ${typeLabel[type || ''] || 'document'} is authentic and issued by S. M. Trade International`
-                : 'This document could not be verified. It may not exist or the link is invalid.'
-              }
+                : 'This document could not be verified. It may not exist or the link is invalid.'}
             </p>
           </div>
         </div>
@@ -91,11 +125,9 @@ export default function VerifyPage() {
           }}>
             <FileText size={20} color={NAVY} />
             <div>
-              <span style={{ fontSize: '14px', fontWeight: 'bold', color: NAVY }}>
-                {document.invoiceNumber || document.quotationNumber || document.challanNumber || document.poNumber}
-              </span>
+              <span style={{ fontSize: '14px', fontWeight: 'bold', color: NAVY }}>{documentNumber}</span>
               <span style={{ fontSize: '12px', color: '#888', marginLeft: '12px' }}>
-                {typeLabel[type || '']} • {document.date}
+                {typeLabel[type || '']} • {String(document.date || '')}
               </span>
             </div>
             <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '6px' }}>
@@ -106,15 +138,17 @@ export default function VerifyPage() {
 
           <div style={{ maxWidth: '840px', margin: '0 auto', padding: '0 20px' }}>
             <DocumentPreview
-              type={docType[type || ''] as any}
-              documentNumber={document.invoiceNumber || document.quotationNumber || document.challanNumber || document.poNumber}
-              date={document.date}
-              customerName={document.customerName || document.supplierName}
-              customerAddress={document.customerAddress || document.supplierAddress}
-              customerPhone={document.customerPhone || document.supplierPhone}
-              customerEmail={document.customerEmail || document.supplierEmail}
-              items={document.items}
-              challanItems={type === 'challan' ? document.items : undefined}
+              type={previewType}
+              documentNumber={documentNumber}
+              date={String(document.date || '')}
+              customerName={String(document.customerName || document.supplierName || '')}
+              customerAddress={String(document.customerAddress || document.supplierAddress || '')}
+              customerPhone={String(document.customerPhone || document.supplierPhone || '')}
+              customerEmail={document.customerEmail || document.supplierEmail
+                ? String(document.customerEmail || document.supplierEmail)
+                : undefined}
+              items={type === 'challan' ? undefined : (document.items as LineItem[] | undefined)}
+              challanItems={type === 'challan' ? (document.items as ChallanItem[] | undefined) : undefined}
               totalAmount={document.totalAmount}
               totalQuantity={document.totalQuantity}
               orderNo={document.orderNo}

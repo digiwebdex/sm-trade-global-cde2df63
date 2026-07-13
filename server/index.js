@@ -82,11 +82,116 @@ app.post('/api/auth/login', async (req, res) => {
   }
 });
 
+// Public document verify (QR scan) — no auth
+app.get('/api/verify/:type/:docId', async (req, res) => {
+  try {
+    const type = String(req.params.type || '').toLowerCase();
+    const docId = String(req.params.docId || '').toLowerCase();
+    if (!type || !docId) return res.status(400).json({ error: 'Missing type or document id' });
+
+    const typeMap = {
+      invoice: {
+        table: 'invoices',
+        numberCol: 'invoice_number',
+        numberAlias: 'invoiceNumber',
+        select: `id, invoice_number as invoiceNumber, date, customer_id as customerId,
+          customer_name as customerName, customer_address as customerAddress, customer_phone as customerPhone,
+          customer_email as customerEmail, total_amount as totalAmount, tax, total_paid as totalPaid,
+          status, amount_in_words as amountInWords, signature_received as signatureReceived,
+          signature_prepared as signaturePrepared, signature_authorize as signatureAuthorize,
+          notes, created_at as createdAt`,
+        itemsTable: 'invoice_items',
+        itemsFk: 'invoice_id',
+        itemsSelect: 'id, description, quantity, unit_price as unitPrice, total',
+        payments: true,
+      },
+      quotation: {
+        table: 'quotations',
+        numberCol: 'quotation_number',
+        numberAlias: 'quotationNumber',
+        select: `id, quotation_number as quotationNumber, date, customer_id as customerId,
+          customer_name as customerName, customer_address as customerAddress, customer_phone as customerPhone,
+          total_amount as totalAmount, status, amount_in_words as amountInWords, valid_until as validUntil,
+          signature_received as signatureReceived, signature_prepared as signaturePrepared,
+          signature_authorize as signatureAuthorize, notes, created_at as createdAt`,
+        itemsTable: 'quotation_items',
+        itemsFk: 'quotation_id',
+        itemsSelect: 'id, description, quantity, unit_price as unitPrice, total',
+        payments: false,
+      },
+      challan: {
+        table: 'challans',
+        numberCol: 'challan_number',
+        numberAlias: 'challanNumber',
+        select: `id, challan_number as challanNumber, date, order_no as orderNo, customer_id as customerId,
+          customer_name as customerName, customer_address as customerAddress, customer_phone as customerPhone,
+          total_quantity as totalQuantity, status, signature_received as signatureReceived,
+          signature_prepared as signaturePrepared, signature_authorize as signatureAuthorize,
+          notes, created_at as createdAt`,
+        itemsTable: 'challan_items',
+        itemsFk: 'challan_id',
+        itemsSelect: 'id, item_name as itemName, details, size, delivery_qty as deliveryQty, balance_qty as balanceQty, unit',
+        payments: false,
+      },
+      'purchase-order': {
+        table: 'purchase_orders',
+        numberCol: 'po_number',
+        numberAlias: 'poNumber',
+        select: `id, po_number as poNumber, date, supplier_name as supplierName,
+          supplier_address as supplierAddress, supplier_phone as supplierPhone,
+          supplier_email as supplierEmail, total_amount as totalAmount, status,
+          amount_in_words as amountInWords, notes, created_at as createdAt`,
+        itemsTable: 'purchase_order_items',
+        itemsFk: 'po_id',
+        itemsSelect: 'id, description, quantity, unit_price as unitPrice, total',
+        payments: false,
+      },
+    };
+
+    const cfg = typeMap[type];
+    if (!cfg) return res.status(400).json({ error: 'Invalid document type' });
+
+    const [rows] = await pool.query(`SELECT ${cfg.select} FROM ${cfg.table}`);
+    const doc = rows.find((row) => {
+      const num = String(row[cfg.numberAlias] || '').toLowerCase().replace(/[^a-z0-9-]/g, '-');
+      return num === docId;
+    });
+    if (!doc) return res.status(404).json({ error: 'Document not found' });
+
+    const [items] = await pool.query(
+      `SELECT ${cfg.itemsSelect} FROM ${cfg.itemsTable} WHERE ${cfg.itemsFk}=?`,
+      [doc.id]
+    );
+    doc.items = items;
+
+    if (cfg.payments) {
+      const [payments] = await pool.query(
+        'SELECT id, date, method, description, amount FROM invoice_payments WHERE invoice_id=?',
+        [doc.id]
+      );
+      doc.payments = payments;
+    }
+
+    const [settingsRows] = await pool.query(
+      `SELECT name, tagline, address, phone, email, website, logo,
+        signature_received as signatureReceived, signature_prepared as signaturePrepared,
+        signature_authorize as signatureAuthorize FROM company_settings WHERE id=1`
+    );
+
+    res.json({ document: doc, settings: settingsRows[0] || null });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Protect all remaining /api routes
 app.use((req, res, next) => {
   if (req.url.startsWith('/api/')) return requireAuth(req, res, next);
   next();
 });
+
+const backupsRouter = require('./routes/backups');
+app.use('/api/backups', backupsRouter);
 
 app.post('/api/auth/change-password', async (req, res) => {
   try {

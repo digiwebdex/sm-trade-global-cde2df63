@@ -125,9 +125,12 @@ export default function SettingsPage() {
   const [settings, setSettings] = useState<CompanySettings>(defaultSettings);
 
   useEffect(() => {
-    api.getSettings().then((d: any) => {
-      if (d && d.name) setSettings(d);
-    }).catch(() => {});
+    api.getSettings().then((d) => {
+      const settingsData = d as CompanySettings | null;
+      if (settingsData && settingsData.name) setSettings(settingsData);
+    }).catch(() => {
+      // Keep defaults if settings cannot be loaded
+    });
   }, []);
 
   const handleSave = async () => {

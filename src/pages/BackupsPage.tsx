@@ -45,25 +45,28 @@ export default function BackupsPage() {
   const [creating, setCreating] = useState(false);
   const [uploadingDrive, setUploadingDrive] = useState<string | null>(null);
 
-  const token = localStorage.getItem('sm_auth_token');
-  const headers: Record<string, string> = {
-    'Content-Type': 'application/json',
-    ...(token ? { Authorization: `Bearer ${token}` } : {}),
-  };
+  const getAuthHeaders = useCallback((): Record<string, string> => {
+    const token = localStorage.getItem('sm_auth_token');
+    return {
+      'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    };
+  }, []);
 
   const fetchBackups = useCallback(async () => {
     try {
       setLoading(true);
-      const res = await fetch(`${API_BASE}/backups`, { headers });
+      const res = await fetch(`${API_BASE}/backups`, { headers: getAuthHeaders() });
       if (!res.ok) throw new Error('Failed to fetch backups');
       const data = await res.json();
       setBackups(data);
-    } catch (err: any) {
-      toast.error(err.message || 'Failed to load backups');
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Failed to load backups';
+      toast.error(message);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [getAuthHeaders]);
 
   useEffect(() => {
     fetchBackups();
@@ -72,13 +75,14 @@ export default function BackupsPage() {
   const createBackup = async () => {
     try {
       setCreating(true);
-      const res = await fetch(`${API_BASE}/backups`, { method: 'POST', headers });
+      const res = await fetch(`${API_BASE}/backups`, { method: 'POST', headers: getAuthHeaders() });
       if (!res.ok) throw new Error('Backup failed');
       const data = await res.json();
-      toast.success(`ব্যাকাপ তৈরি হয়েছে: ${data.filename}`);
+      toast.success(`Backup created: ${data.filename}`);
       fetchBackups();
-    } catch (err: any) {
-      toast.error(err.message || 'Backup creation failed');
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Backup creation failed';
+      toast.error(message);
     } finally {
       setCreating(false);
     }
@@ -89,32 +93,32 @@ export default function BackupsPage() {
     const a = document.createElement('a');
     a.href = url;
     a.download = filename;
-    if (token) {
-      // Use fetch for auth download
-      fetch(url, { headers })
-        .then(res => res.blob())
-        .then(blob => {
-          const blobUrl = URL.createObjectURL(blob);
-          a.href = blobUrl;
-          a.click();
-          URL.revokeObjectURL(blobUrl);
-        })
-        .catch(() => toast.error('Download failed'));
-    } else {
-      a.click();
-    }
+    fetch(url, { headers: getAuthHeaders() })
+      .then((res) => {
+        if (!res.ok) throw new Error('Download failed');
+        return res.blob();
+      })
+      .then((blob) => {
+        const blobUrl = URL.createObjectURL(blob);
+        a.href = blobUrl;
+        a.click();
+        URL.revokeObjectURL(blobUrl);
+      })
+      .catch(() => toast.error('Download failed'));
   };
 
   const deleteBackup = async (filename: string) => {
     try {
       const res = await fetch(`${API_BASE}/backups/${encodeURIComponent(filename)}`, {
-        method: 'DELETE', headers,
+        method: 'DELETE',
+        headers: getAuthHeaders(),
       });
       if (!res.ok) throw new Error('Delete failed');
-      toast.success('ব্যাকাপ ডিলিট হয়েছে');
+      toast.success('Backup deleted');
       fetchBackups();
-    } catch (err: any) {
-      toast.error(err.message || 'Delete failed');
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Delete failed';
+      toast.error(message);
     }
   };
 
@@ -122,15 +126,17 @@ export default function BackupsPage() {
     try {
       setUploadingDrive(filename);
       const res = await fetch(`${API_BASE}/backups/${encodeURIComponent(filename)}/upload-drive`, {
-        method: 'POST', headers,
+        method: 'POST',
+        headers: getAuthHeaders(),
       });
       if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
+        const data = await res.json().catch(() => ({} as { error?: string }));
         throw new Error(data.error || 'Google Drive upload failed');
       }
-      toast.success('Google Drive-এ আপলোড সম্পন্ন');
-    } catch (err: any) {
-      toast.error(err.message || 'Upload failed');
+      toast.success('Uploaded to Google Drive');
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Upload failed';
+      toast.error(message);
     } finally {
       setUploadingDrive(null);
     }
